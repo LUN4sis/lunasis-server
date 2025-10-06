@@ -6,7 +6,7 @@ public interface ApiExceptions {
 
     String getMessage();
 
-    default ApiException toApiException() {
+    default ApiException toException() {
 
         return new ApiException(this);
     }
