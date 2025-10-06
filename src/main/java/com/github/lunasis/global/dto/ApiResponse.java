@@ -1,6 +1,6 @@
 package com.github.lunasis.global.dto;
 
-import com.github.lunasis.global.exception.ApiExceptions;
+import com.github.lunasis.global.exception.ApiException;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
@@ -27,9 +27,9 @@ public class ApiResponse<T> {
         return new ApiResponse<>(false, message, code, null);
     }
 
-    public static ApiResponse<Void> error(ApiExceptions exceptions) {
+    public static ApiResponse<Void> error(ApiException exception) {
 
-        return error(exceptions.getMessage(), exceptions.getCode());
+        return error(exception.getMessage(), exception.getCode());
     }
 
 }
