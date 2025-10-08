@@ -8,7 +8,7 @@ import java.util.UUID;
 @Entity
 @Builder
 @Getter
-@Table(name = "User")
+@Table(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
