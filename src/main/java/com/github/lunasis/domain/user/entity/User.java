@@ -30,5 +30,9 @@ public class User {
     @Column(name = "profile")
     private String profile;
 
+    @Column(name = "private_chat")
+    @Builder.Default
+    private boolean privateChat = false;
+
 
 }
