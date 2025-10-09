@@ -24,6 +24,10 @@ public class ExchangeToken {
 
     boolean firstLogin;
 
+    String name;
+
+    boolean privateChat;
+
     @TimeToLive(unit = TimeUnit.MINUTES)
     long ttl;
 }

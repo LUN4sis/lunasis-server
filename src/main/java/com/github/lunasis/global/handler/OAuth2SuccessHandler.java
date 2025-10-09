@@ -34,7 +34,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         String accessToken = jwtUtil.generateAccessToken(user);
         String refreshToken = jwtUtil.generateRefreshToken(user);
 
-        String exchangeTokenId = jwtUtil.generateExchangeToken(accessToken, refreshToken, firstLogin);
+        String exchangeTokenId = jwtUtil.generateExchangeToken(accessToken, refreshToken, firstLogin, user.getNickname(), user.isPrivateChat());
 
         String redirectUrl = String.format("http://localhost:3000/oauth/callback?code=%s", exchangeTokenId);
         response.sendRedirect(redirectUrl);
