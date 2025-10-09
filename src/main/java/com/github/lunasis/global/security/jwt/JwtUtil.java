@@ -107,12 +107,14 @@ public class JwtUtil {
         return token;
     }
 
-    public String generateExchangeToken(String accessToken, String refreshToken, boolean firstLogin) {
+    public String generateExchangeToken(String accessToken, String refreshToken, boolean firstLogin, String nickname, boolean isPrivateChat) {
 
         ExchangeToken exchangeToken = exchangeTokenRepository.save(ExchangeToken.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .firstLogin(firstLogin)
+                .name(nickname)
+                .privateChat(isPrivateChat)
                 .ttl(5)
                 .build());
 
