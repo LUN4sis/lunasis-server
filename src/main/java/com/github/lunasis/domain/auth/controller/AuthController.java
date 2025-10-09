@@ -4,6 +4,8 @@ import com.github.lunasis.domain.auth.dto.request.ExchangeTokenRequest;
 import com.github.lunasis.domain.auth.dto.response.LoginResponse;
 import com.github.lunasis.domain.auth.service.AuthService;
 import com.github.lunasis.global.dto.ApiResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,7 +20,8 @@ public class AuthController {
     private final AuthService authService;
 
     @GetMapping("/exchange")
-    public ApiResponse<LoginResponse> exchangeToken(@RequestBody ExchangeTokenRequest exchangeTokenRequest) {
+    @Operation(summary = "토큰 교환 api")
+    public ApiResponse<LoginResponse> exchangeToken(@RequestBody @Valid ExchangeTokenRequest exchangeTokenRequest) {
 
         return ApiResponse.ok(authService.exchangeToken(exchangeTokenRequest));
     }
