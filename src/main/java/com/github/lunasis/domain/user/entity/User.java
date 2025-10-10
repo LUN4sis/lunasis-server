@@ -1,8 +1,10 @@
 package com.github.lunasis.domain.user.entity;
 
+import com.github.lunasis.domain.user.dto.request.UpdateUserInfo;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -34,7 +36,7 @@ public class User {
 
     @Column(name = "private_chat")
     @Builder.Default
-    private boolean privateChat = false;
+    private Boolean privateChat = false;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "insurance")
@@ -59,7 +61,26 @@ public class User {
     private Set<ProductCategory> productCategory = new HashSet<>();
 
     //선호조사 용
-    @Column(name = "price_comparision")
-    private boolean priceComparision;
+    @Column(name = "price_comparison")
+    @Builder.Default
+    private Boolean priceComparison = false;
+
+    public void update(UpdateUserInfo updateUserInfo) {
+
+        this.nickname = updateUserInfo.nickname();
+        this.age = updateUserInfo.age();
+        this.insurance = updateUserInfo.insurance();
+        this.zipCode = updateUserInfo.zipCode();
+        this.community = updateUserInfo.community();
+        this.privateChat = updateUserInfo.privateChat();
+        this.priceComparison = updateUserInfo.priceComparison();
+
+        if (updateUserInfo.productCategories() != null) {
+            this.productCategory = new HashSet<>(Arrays.asList(updateUserInfo.productCategories()));
+        } else {
+            this.productCategory = new HashSet<>();
+        }
+
+    }
 
 }
