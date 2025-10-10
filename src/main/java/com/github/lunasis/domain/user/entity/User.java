@@ -3,6 +3,8 @@ package com.github.lunasis.domain.user.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -34,5 +36,30 @@ public class User {
     @Builder.Default
     private boolean privateChat = false;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "insurance")
+    private Insurance insurance;
+
+    @Column(name = "zip_code")
+    private String zipCode;
+
+    // 선호조사 용
+    @Enumerated(EnumType.STRING)
+    @Column(name = "community")
+    private Community community;
+
+    @ElementCollection(targetClass = ProductCategory.class)
+    @CollectionTable(
+            name = "user_product_categories",
+            joinColumns = @JoinColumn(name = "user_id")
+    )
+    @Enumerated(EnumType.STRING)
+    @Column(name = "product_category")
+    @Builder.Default
+    private Set<ProductCategory> productCategory = new HashSet<>();
+
+    //선호조사 용
+    @Column(name = "price_comparision")
+    private boolean priceComparision;
 
 }
