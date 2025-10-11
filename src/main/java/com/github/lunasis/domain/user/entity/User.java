@@ -22,7 +22,7 @@ public class User {
     @Column(nullable = false, updatable = false)
     private UUID id;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String nickname;
 
     @Column(name = "google_id", nullable = false, unique = true)

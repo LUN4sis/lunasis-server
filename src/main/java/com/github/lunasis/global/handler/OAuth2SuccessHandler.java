@@ -28,13 +28,14 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
         Optional<User> optionalUser = userRepository.findByGoogleId((String) oAuth2User.getAttributes().get("sub"));
 
-        boolean firstLogin = optionalUser.isEmpty();
         User user = optionalUser.orElseGet(() -> from(oAuth2User.getAttributes()));
+
+        boolean firstLogin = user.getNickname() == null;
 
         String accessToken = jwtUtil.generateAccessToken(user);
         String refreshToken = jwtUtil.generateRefreshToken(user);
 
-        String exchangeTokenId = jwtUtil.generateExchangeToken(accessToken, refreshToken, firstLogin, user.getNickname(), user.getPrivateChat());
+        String exchangeTokenId = jwtUtil.generateExchangeToken(accessToken, refreshToken, firstLogin, (String) oAuth2User.getAttributes().get("name"), user.getPrivateChat());
 
         String redirectUrl = String.format("http://localhost:3000/oauth/callback?code=%s", exchangeTokenId);
         response.sendRedirect(redirectUrl);
@@ -45,7 +46,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
         return userRepository.save(
                 User.builder()
-                        .nickname((String) attributes.get("name"))
+                        .nickname(null)
                         .googleId((String) attributes.get("sub"))
                         .profile((String) attributes.get("picture"))
                         .build()
