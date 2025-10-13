@@ -1,6 +1,7 @@
 package com.github.lunasis.domain.chat.service;
 
 import com.github.lunasis.domain.chat.dto.request.QuestionRequest;
+import com.github.lunasis.domain.chat.dto.response.ChatListResponse;
 import com.github.lunasis.domain.chat.dto.response.ChatResponse;
 import com.github.lunasis.domain.chat.dto.response.StartChatResponse;
 import com.github.lunasis.domain.chat.entity.Chat;
@@ -11,6 +12,8 @@ import com.github.lunasis.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -66,5 +69,10 @@ public class ChatService {
         return ChatResponse.builder()
                 .answer(answer)
                 .build();
+    }
+
+    public List<ChatListResponse> getChatRooms(User user) {
+
+        return user.getChatRooms().stream().map(ChatListResponse::from).toList();
     }
 }
