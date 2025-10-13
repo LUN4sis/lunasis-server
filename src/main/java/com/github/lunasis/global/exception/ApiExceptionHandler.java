@@ -4,6 +4,7 @@ import com.github.lunasis.global.dto.ApiResponse;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingPathVariableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -26,6 +27,11 @@ public class ApiExceptionHandler {
     @ExceptionHandler(ApiException.class)
     public ApiResponse<?> handleApiException(ApiException e) {
         return ApiResponse.error(e.getMessage(), e.getCode());
+    }
+
+    @ExceptionHandler(MissingPathVariableException.class)
+    public ApiResponse<Void> missingPathVariableException(MissingPathVariableException e) {
+        return ApiResponse.error("잘못 된 UUID 입니다", 404);
     }
 
     @ExceptionHandler(Exception.class)
