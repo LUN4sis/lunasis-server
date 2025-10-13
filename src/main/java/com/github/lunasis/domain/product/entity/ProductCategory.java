@@ -1,4 +1,4 @@
-package com.github.lunasis.domain.user.entity;
+package com.github.lunasis.domain.product.entity;
 
 public enum ProductCategory {
 
