@@ -1,6 +1,7 @@
 package com.github.lunasis.domain.chat.controller;
 
 import com.github.lunasis.domain.chat.dto.request.QuestionRequest;
+import com.github.lunasis.domain.chat.dto.response.ChatHistoryResponse;
 import com.github.lunasis.domain.chat.dto.response.ChatListResponse;
 import com.github.lunasis.domain.chat.dto.response.ChatResponse;
 import com.github.lunasis.domain.chat.dto.response.StartChatResponse;
@@ -41,5 +42,11 @@ public class ChatController {
     public ApiResponse<List<ChatListResponse>> getChatRooms(@AuthenticationPrincipal User user) {
 
         return ApiResponse.ok(chatService.getChatRooms(user));
+    }
+
+    @GetMapping("/{chatRoom}")
+    public ApiResponse<List<ChatHistoryResponse>> getChatHistory(@AuthenticationPrincipal User user, @PathVariable ChatRoom chatRoom) {
+
+        return ApiResponse.ok(chatService.getChatHistory(user, chatRoom));
     }
 }

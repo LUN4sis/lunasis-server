@@ -1,6 +1,7 @@
 package com.github.lunasis.domain.chat.service;
 
 import com.github.lunasis.domain.chat.dto.request.QuestionRequest;
+import com.github.lunasis.domain.chat.dto.response.ChatHistoryResponse;
 import com.github.lunasis.domain.chat.dto.response.ChatListResponse;
 import com.github.lunasis.domain.chat.dto.response.ChatResponse;
 import com.github.lunasis.domain.chat.dto.response.StartChatResponse;
@@ -74,5 +75,14 @@ public class ChatService {
     public List<ChatListResponse> getChatRooms(User user) {
 
         return user.getChatRooms().stream().map(ChatListResponse::from).toList();
+    }
+
+    public List<ChatHistoryResponse> getChatHistory(User user, ChatRoom chatRoom) {
+
+        if (!user.getId().equals(chatRoom.getUser().getId())) {
+            throw ChatsExceptions.USER_NOT_ALLOWED.toException();
+        }
+
+        return chatRoom.getChats().stream().map(ChatHistoryResponse::from).toList();
     }
 }
