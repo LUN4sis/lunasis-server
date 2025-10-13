@@ -1,9 +1,11 @@
 package com.github.lunasis.domain.chat.service;
 
 import com.github.lunasis.domain.chat.dto.request.QuestionRequest;
+import com.github.lunasis.domain.chat.dto.response.ChatResponse;
 import com.github.lunasis.domain.chat.dto.response.StartChatResponse;
 import com.github.lunasis.domain.chat.entity.Chat;
 import com.github.lunasis.domain.chat.entity.ChatRoom;
+import com.github.lunasis.domain.chat.exception.ChatsExceptions;
 import com.github.lunasis.domain.chat.repository.ChatRoomRepository;
 import com.github.lunasis.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +40,30 @@ public class ChatService {
 
         return StartChatResponse.builder()
                 .chatRoomId(chatRoom.getId())
+                .answer(answer)
+                .build();
+    }
+
+    public ChatResponse chat(User user, ChatRoom chatRoom, QuestionRequest questionRequest) {
+
+        if (!user.getId().equals(chatRoom.getUser().getId())) {
+            throw ChatsExceptions.USER_NOT_ALLOWED.toException();
+        }
+
+        //Todo: llm에 질문 전달
+
+        String answer = "test answer";
+
+        Chat chat = Chat.builder()
+                .chatRoom(chatRoom)
+                .question(questionRequest.question())
+                .answer(answer)
+                .build();
+
+        chatRoom.getChats().add(chat);
+        chatRoomRepository.save(chatRoom);
+
+        return ChatResponse.builder()
                 .answer(answer)
                 .build();
     }

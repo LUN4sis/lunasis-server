@@ -1,7 +1,9 @@
 package com.github.lunasis.domain.chat.controller;
 
 import com.github.lunasis.domain.chat.dto.request.QuestionRequest;
+import com.github.lunasis.domain.chat.dto.response.ChatResponse;
 import com.github.lunasis.domain.chat.dto.response.StartChatResponse;
+import com.github.lunasis.domain.chat.entity.ChatRoom;
 import com.github.lunasis.domain.chat.service.ChatService;
 import com.github.lunasis.domain.user.entity.User;
 import com.github.lunasis.global.dto.ApiResponse;
@@ -9,10 +11,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/chats")
@@ -28,4 +27,10 @@ public class ChatController {
         return ApiResponse.ok(chatService.startChat(user, questionRequest));
     }
 
+    @PostMapping("/{chatRoom}")
+    public ApiResponse<ChatResponse> chat(@AuthenticationPrincipal User user, @PathVariable ChatRoom chatRoom,
+                                          @Valid @RequestBody QuestionRequest questionRequest) {
+
+        return ApiResponse.ok(chatService.chat(user, chatRoom, questionRequest));
+    }
 }
