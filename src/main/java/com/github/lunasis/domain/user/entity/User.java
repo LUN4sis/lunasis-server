@@ -1,6 +1,7 @@
 package com.github.lunasis.domain.user.entity;
 
 import com.github.lunasis.domain.chat.entity.ChatRoom;
+import com.github.lunasis.domain.product.entity.ProductCategory;
 import com.github.lunasis.domain.user.dto.request.UpdateUserInfo;
 import jakarta.persistence.*;
 import lombok.*;

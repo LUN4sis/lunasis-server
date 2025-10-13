@@ -1,8 +1,8 @@
 package com.github.lunasis.domain.user.dto.request;
 
+import com.github.lunasis.domain.product.entity.ProductCategory;
 import com.github.lunasis.domain.user.entity.Community;
 import com.github.lunasis.domain.user.entity.Insurance;
-import com.github.lunasis.domain.user.entity.ProductCategory;
 
 public record UpdateUserInfo(
 
