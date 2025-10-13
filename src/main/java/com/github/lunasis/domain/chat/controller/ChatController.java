@@ -32,6 +32,7 @@ public class ChatController {
     }
 
     @PostMapping("/{chatRoom}")
+    @Operation(summary = "채팅 보내기 api")
     public ApiResponse<ChatResponse> chat(@AuthenticationPrincipal User user, @PathVariable ChatRoom chatRoom,
                                           @Valid @RequestBody QuestionRequest questionRequest) {
 
@@ -39,12 +40,14 @@ public class ChatController {
     }
 
     @GetMapping
+    @Operation(summary = "채팅방 목록 불러오기 api")
     public ApiResponse<List<ChatListResponse>> getChatRooms(@AuthenticationPrincipal User user) {
 
         return ApiResponse.ok(chatService.getChatRooms(user));
     }
 
     @GetMapping("/{chatRoom}")
+    @Operation(summary = "채팅방 대화 내용 불러오기")
     public ApiResponse<List<ChatHistoryResponse>> getChatHistory(@AuthenticationPrincipal User user, @PathVariable ChatRoom chatRoom) {
 
         return ApiResponse.ok(chatService.getChatHistory(user, chatRoom));
