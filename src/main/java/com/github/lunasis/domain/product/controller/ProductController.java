@@ -1,7 +1,9 @@
 package com.github.lunasis.domain.product.controller;
 
+import com.github.lunasis.domain.product.dto.response.MallResponse;
 import com.github.lunasis.domain.product.dto.response.ProductListResponse;
 import com.github.lunasis.domain.product.dto.response.ProductPriceListResponse;
+import com.github.lunasis.domain.product.entity.Bundle;
 import com.github.lunasis.domain.product.entity.Product;
 import com.github.lunasis.domain.product.entity.ProductCategory;
 import com.github.lunasis.domain.product.service.ProductService;
@@ -28,5 +30,11 @@ public class ProductController {
     public ApiResponse<ProductPriceListResponse> getProductPrice(@PathVariable Product product) {
 
         return ApiResponse.ok(productService.getProductPriceList(product));
+    }
+
+    @GetMapping("/{bundle}")
+    public ApiResponse<List<MallResponse>> getBundleMallList(@PathVariable Bundle bundle) {
+
+        return ApiResponse.ok(productService.getMallPrice(bundle));
     }
 }

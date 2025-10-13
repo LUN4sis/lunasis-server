@@ -1,5 +1,6 @@
 package com.github.lunasis.domain.product.service;
 
+import com.github.lunasis.domain.product.dto.response.MallResponse;
 import com.github.lunasis.domain.product.dto.response.ProductListResponse;
 import com.github.lunasis.domain.product.dto.response.ProductPriceListResponse;
 import com.github.lunasis.domain.product.dto.response.SimplePriceResponse;
@@ -41,6 +42,11 @@ public class ProductService {
                 .name(product.getName())
                 .prices(prices)
                 .build();
+    }
+
+    public List<MallResponse> getMallPrice(Bundle bundle) {
+
+        return bundle.getProductUrls().stream().map(MallResponse::from).toList();
     }
 
 
