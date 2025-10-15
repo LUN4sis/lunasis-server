@@ -19,7 +19,7 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @GetMapping("/exchange")
+    @PostMapping("/exchange")
     @Operation(summary = "토큰 교환 api")
     public ApiResponse<LoginResponse> exchangeToken(@RequestBody @Valid ExchangeTokenRequest exchangeTokenRequest) {
 
