@@ -24,7 +24,7 @@ public class UserController {
         return ApiResponse.ok(userService.updateUserInfo(user, updateUserInfo));
     }
 
-    @GetMapping("/check")
+    @PostMapping("/check")
     public ApiResponse<Void> checkNickname(@Valid @RequestBody CheckNickname checkNickname) {
 
         if (!userService.checkNickname(checkNickname.nickname())) {
