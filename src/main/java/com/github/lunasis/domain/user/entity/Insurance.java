@@ -12,4 +12,5 @@ public enum Insurance {
     TRICARE,
     TRAVEL_INSURANCE,
     OTHER,
+    I_DONT_KNOW
 }
