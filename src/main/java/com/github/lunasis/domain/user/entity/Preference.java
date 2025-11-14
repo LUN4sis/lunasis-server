@@ -1,6 +1,7 @@
 package com.github.lunasis.domain.user.entity;
 
 import com.github.lunasis.domain.product.entity.ProductCategory;
+import com.github.lunasis.domain.user.dto.request.UpdatePreference;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -62,4 +63,10 @@ public class Preference {
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    public void updateUserPreference(UpdatePreference updatePreference) {
+        this.communities = updatePreference.communities();
+        this.productCategories = updatePreference.categories();
+        this.priceComparison = updatePreference.priceComparison();
+    }
 }

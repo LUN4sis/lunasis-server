@@ -1,8 +1,10 @@
 package com.github.lunasis.domain.user.service;
 
+import com.github.lunasis.domain.user.dto.request.UpdatePreference;
 import com.github.lunasis.domain.user.dto.request.UpdateUserInfo;
 import com.github.lunasis.domain.user.dto.response.SimpleUserInfo;
 import com.github.lunasis.domain.user.entity.User;
+import com.github.lunasis.domain.user.exception.UserExceptions;
 import com.github.lunasis.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,6 +32,15 @@ public class UserService {
     public boolean checkNickname(String nickname) {
 
         return userRepository.findByNickname(nickname).isPresent();
+    }
+
+    @Transactional
+    public void updatePreference(User user, UpdatePreference updatePreference) {
+
+        User currentUser = userRepository.findById(user.getId())
+                .orElseThrow(UserExceptions.USER_NOT_FOUND::toException);
+        currentUser.getPreference().updateUserPreference(updatePreference);
+        userRepository.save(currentUser);
     }
 
 
