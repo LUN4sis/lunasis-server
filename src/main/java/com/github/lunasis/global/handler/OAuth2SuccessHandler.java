@@ -6,6 +6,7 @@ import com.github.lunasis.global.security.jwt.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -19,6 +20,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
+    @Value("${spring.security.oauth2.callback-url}")
+    private String callbackUrl;
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
 
@@ -37,7 +40,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
         String exchangeTokenId = jwtUtil.generateExchangeToken(accessToken, refreshToken, firstLogin, (String) oAuth2User.getAttributes().get("name"), user.getPrivateChat());
 
-        String redirectUrl = String.format("http://localhost:3000/oauth/callback?code=%s", exchangeTokenId);
+        String redirectUrl = String.format("%s?code=%s", callbackUrl, exchangeTokenId);
         response.sendRedirect(redirectUrl);
     }
 
