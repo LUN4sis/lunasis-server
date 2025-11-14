@@ -7,6 +7,7 @@ import com.github.lunasis.domain.user.dto.response.SimpleUserInfo;
 import com.github.lunasis.domain.user.entity.User;
 import com.github.lunasis.domain.user.service.UserService;
 import com.github.lunasis.global.dto.ApiResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,6 +24,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
+    @Operation(summary = "사용자 정보 수정")
     public ApiResponse<SimpleUserInfo> updateUser(@AuthenticationPrincipal User user,
                                                   @RequestBody UpdateUserInfo updateUserInfo) {
 
@@ -30,6 +32,7 @@ public class UserController {
     }
 
     @PostMapping("/preference")
+    @Operation(summary = "사용자 선호도 수정")
     public ApiResponse<Void> updatePreference(@AuthenticationPrincipal User user,
                                               @RequestBody @Valid UpdatePreference updatePreference) {
 
@@ -38,6 +41,7 @@ public class UserController {
     }
 
     @PostMapping("/check")
+    @Operation(summary = "닉네임 중복 확인")
     public ApiResponse<Void> checkNickname(@Valid @RequestBody CheckNickname checkNickname) {
 
         if (!userService.checkNickname(checkNickname.nickname())) {
