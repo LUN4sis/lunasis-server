@@ -29,7 +29,7 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping
-    @Operation(description = " 새 게시물 생성 ")
+    @Operation(summary = " 새 게시물 생성 ")
     public ApiResponse<PostInfoResponse> createPost(@AuthenticationPrincipal User user,
                                                     @RequestBody CreatePostRequest request) {
 
@@ -37,14 +37,14 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    @Operation(description = " 게시물 상세 조회 ")
+    @Operation(summary = " 게시물 상세 조회 ")
     public ApiResponse<PostInfoResponse> getPost(@AuthenticationPrincipal User user, @PathVariable UUID postId) {
 
         return ApiResponse.ok(postService.getPost(user, postId));
     }
 
     @PatchMapping("/{postId}")
-    @Operation(description = " 게시물 수정 ")
+    @Operation(summary = " 게시물 수정 ")
     public ApiResponse<PostInfoResponse> updatePost(@AuthenticationPrincipal User user, @PathVariable UUID postId,
                                                     @RequestBody ModifyPostRequest request) {
 
@@ -52,7 +52,7 @@ public class PostController {
     }
 
     @DeleteMapping("/{postId}")
-    @Operation(description = " 게시물 삭제 ")
+    @Operation(summary = " 게시물 삭제 ")
     public ApiResponse<Void> deletePost(@AuthenticationPrincipal User user, @PathVariable UUID postId) {
 
         postService.deletePost(user, postId);
