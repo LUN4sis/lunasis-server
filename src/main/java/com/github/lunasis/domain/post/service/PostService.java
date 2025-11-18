@@ -80,4 +80,19 @@ public class PostService {
 
         return PostInfoResponse.of(user, post);
     }
+
+    @Transactional
+    public void deletePost(User user, UUID postId) {
+
+        Post post = postRepository.findByIdWithUser(postId)
+                .orElseThrow(PostExceptions.POST_NOT_FOUND::toException);
+
+        //작성자 확인
+        if (!post.getUser().getId().equals(user.getId())) {
+            throw PostExceptions.UNAUTHORIZED_POST_MODIFICATION.toException();
+        }
+
+        //포스트 삭제
+        postRepository.delete(post);
+    }
 }

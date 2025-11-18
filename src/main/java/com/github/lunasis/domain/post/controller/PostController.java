@@ -11,6 +11,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,6 +49,13 @@ public class PostController {
                                                     @RequestBody ModifyPostRequest request) {
 
         return ApiResponse.ok(postService.updatePost(user, postId, request));
+    }
 
+    @DeleteMapping("/{postId}")
+    @Operation(description = " 게시물 삭제 ")
+    public ApiResponse<Void> deletePost(@AuthenticationPrincipal User user, @PathVariable UUID postId) {
+
+        postService.deletePost(user, postId);
+        return ApiResponse.ok();
     }
 }
