@@ -55,4 +55,14 @@ public class Post {
 
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
+
+    public void updatePost(String title, String content) {
+        
+        if (title != null) {
+            this.title = title;
+        }
+        if (content != null) {
+            this.content = content;
+        }
+    }
 }

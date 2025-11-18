@@ -1,6 +1,7 @@
 package com.github.lunasis.domain.post.service;
 
 import com.github.lunasis.domain.post.dto.request.CreatePostRequest;
+import com.github.lunasis.domain.post.dto.request.ModifyPostRequest;
 import com.github.lunasis.domain.post.dto.response.PostInfoResponse;
 import com.github.lunasis.domain.post.dto.response.SimpleAuthorResponse;
 import com.github.lunasis.domain.post.entity.Post;
@@ -61,5 +62,22 @@ public class PostService {
                 .createdAt(post.getCreatedAt())
                 .updatedAt(post.getUpdatedAt())
                 .build();
+    }
+
+    @Transactional
+    public PostInfoResponse updatePost(User user, UUID postId, ModifyPostRequest request) {
+
+        Post post = postRepository.findByIdWithUser(postId)
+                .orElseThrow(PostExceptions.POST_NOT_FOUND::toException);
+
+        //작성자 확인
+        if (!post.getUser().getId().equals(user.getId())) {
+            throw PostExceptions.UNAUTHORIZED_POST_MODIFICATION.toException();
+        }
+
+        //포스트 수정
+        post.updatePost(request.title(), request.content());
+
+        return PostInfoResponse.of(user, post);
     }
 }

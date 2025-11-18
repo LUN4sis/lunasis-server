@@ -1,6 +1,7 @@
 package com.github.lunasis.domain.post.controller;
 
 import com.github.lunasis.domain.post.dto.request.CreatePostRequest;
+import com.github.lunasis.domain.post.dto.request.ModifyPostRequest;
 import com.github.lunasis.domain.post.dto.response.PostInfoResponse;
 import com.github.lunasis.domain.post.service.PostService;
 import com.github.lunasis.domain.user.entity.User;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,5 +40,14 @@ public class PostController {
     public ApiResponse<PostInfoResponse> getPost(@AuthenticationPrincipal User user, @PathVariable UUID postId) {
 
         return ApiResponse.ok(postService.getPost(user, postId));
+    }
+
+    @PatchMapping("/{postId}")
+    @Operation(description = " 게시물 수정 ")
+    public ApiResponse<PostInfoResponse> updatePost(@AuthenticationPrincipal User user, @PathVariable UUID postId,
+                                                    @RequestBody ModifyPostRequest request) {
+
+        return ApiResponse.ok(postService.updatePost(user, postId, request));
+
     }
 }
