@@ -1,7 +1,9 @@
 package com.github.lunasis.domain.comment.service;
 
 import com.github.lunasis.domain.comment.dto.request.CreateCommentRequest;
+import com.github.lunasis.domain.comment.dto.request.ModifyCommentRequest;
 import com.github.lunasis.domain.comment.dto.response.CommentResponse;
+import com.github.lunasis.domain.comment.dto.response.ModifyCommentResponse;
 import com.github.lunasis.domain.comment.entity.Comment;
 import com.github.lunasis.domain.comment.exception.CommentExceptions;
 import com.github.lunasis.domain.comment.repository.CommentRepository;
@@ -63,4 +65,22 @@ public class CommentService {
                 .createdAt(comment.getCreatedAt())
                 .build();
     }
+
+    public ModifyCommentResponse updateComment(UUID userId, UUID commentId, ModifyCommentRequest request) {
+
+        Comment comment = commentRepository.findByIdWithUser(commentId)
+                .orElseThrow(CommentExceptions.COMMENT_NOT_FOUND::toException);
+
+        if (!comment.getUser().getId().equals(userId)) {
+            throw CommentExceptions.UNAUTHORIZED_COMMENT_MODIFICATION.toException();
+        }
+
+        comment.updateContent(request.content());
+
+        return ModifyCommentResponse.builder()
+                .content(comment.getContent())
+                .build();
+    }
+
+
 }

@@ -67,4 +67,7 @@ public class Comment {
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;
 
+    public void updateContent(String content) {
+        this.content = content;
+    }
 }
