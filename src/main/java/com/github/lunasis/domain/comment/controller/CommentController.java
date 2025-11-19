@@ -1,0 +1,33 @@
+package com.github.lunasis.domain.comment.controller;
+
+import com.github.lunasis.domain.comment.dto.request.CreateCommentRequest;
+import com.github.lunasis.domain.comment.dto.response.CommentResponse;
+import com.github.lunasis.domain.comment.service.CommentService;
+import com.github.lunasis.domain.user.entity.User;
+import com.github.lunasis.global.dto.ApiResponse;
+import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/comments")
+@PreAuthorize("isAuthenticated()")
+public class CommentController {
+
+    private final CommentService commentService;
+
+    @PostMapping("/{postId}")
+    public ApiResponse<CommentResponse> createComment(@AuthenticationPrincipal User user,
+                                                      @PathVariable UUID postId,
+                                                      @RequestBody CreateCommentRequest request) {
+
+        return ApiResponse.ok(commentService.createComment(user.getId(), postId, request));
+    }
+}
