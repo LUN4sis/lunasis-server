@@ -3,6 +3,7 @@ package com.github.lunasis.domain.comment.service;
 import com.github.lunasis.domain.comment.dto.request.CreateCommentRequest;
 import com.github.lunasis.domain.comment.dto.response.CommentResponse;
 import com.github.lunasis.domain.comment.entity.Comment;
+import com.github.lunasis.domain.comment.exception.CommentExceptions;
 import com.github.lunasis.domain.comment.repository.CommentRepository;
 import com.github.lunasis.domain.post.dto.response.SimpleAuthorResponse;
 import com.github.lunasis.domain.post.entity.Post;
@@ -11,10 +12,10 @@ import com.github.lunasis.domain.post.repository.PostRepository;
 import com.github.lunasis.domain.user.entity.User;
 import com.github.lunasis.domain.user.exception.UserExceptions;
 import com.github.lunasis.domain.user.repository.UserRepository;
-import java.util.ArrayList;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,15 +25,28 @@ public class CommentService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
 
+    @Transactional
     public CommentResponse createComment(UUID userId, UUID postId, CreateCommentRequest request) {
 
         User user = userRepository.findById(userId).orElseThrow(UserExceptions.USER_NOT_FOUND::toException);
-        Post post = postRepository.findById(postId).orElseThrow(PostExceptions.POST_NOT_FOUND::toException);
+        Post post = postRepository.findByIdWithComments(postId).orElseThrow(PostExceptions.POST_NOT_FOUND::toException);
+
+        // 대댓글의 부모 댓글, 없으면 null
+        Comment parent = null;
+
+        UUID parentId = request.parentCommentId();
+        // parentId가 null이 아니면 대댓글이므로 부모 댓글을 찾기
+        if (parentId != null) {
+            parent = post.getComments().stream()
+                    .filter(comment -> comment.getId().equals(parentId))
+                    .findFirst()
+                    .orElseThrow(CommentExceptions.COMMENT_NOT_FOUND::toException);
+        }
 
         Comment comment = commentRepository.save(Comment.builder()
                 .content(request.content())
                 .user(user)
-                .parent(null)
+                .parent(parent)
                 .post(post)
                 .build());
 
@@ -40,12 +54,12 @@ public class CommentService {
 
         return CommentResponse.builder()
                 .commentId(comment.getId())
-                .parentCommentId(null)
+                .parentCommentId(parentId)
                 .author(SimpleAuthorResponse.from(user))
                 .content(comment.getContent())
                 .isAuthor(true)
                 .isEdited(false)
-                .replies(new ArrayList<>())
+                .replies(null)
                 .createdAt(comment.getCreatedAt())
                 .build();
     }
