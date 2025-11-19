@@ -1,5 +1,6 @@
 package com.github.lunasis.domain.comment.entity;
 
+import com.github.lunasis.domain.post.entity.Post;
 import com.github.lunasis.domain.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -60,5 +61,9 @@ public class Comment {
     @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)
     @Builder.Default
     private List<Comment> replies = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id", nullable = false)
+    private Post post;
 
 }
