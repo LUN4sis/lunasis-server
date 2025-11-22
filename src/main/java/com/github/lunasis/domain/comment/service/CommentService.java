@@ -66,12 +66,12 @@ public class CommentService {
                 .build();
     }
 
-    public ModifyCommentResponse updateComment(UUID userId, UUID commentId, ModifyCommentRequest request) {
+    public ModifyCommentResponse updateComment(User user, UUID commentId, ModifyCommentRequest request) {
 
         Comment comment = commentRepository.findByIdWithUser(commentId)
                 .orElseThrow(CommentExceptions.COMMENT_NOT_FOUND::toException);
 
-        if (!comment.getUser().getId().equals(userId)) {
+        if (!comment.getUser().getId().equals(user.getId())) {
             throw CommentExceptions.UNAUTHORIZED_COMMENT_MODIFICATION.toException();
         }
 
@@ -80,6 +80,18 @@ public class CommentService {
         return ModifyCommentResponse.builder()
                 .content(comment.getContent())
                 .build();
+    }
+
+    public void deleteComment(User user, UUID commentId) {
+
+        Comment comment = commentRepository.findByIdWithUser(commentId)
+                .orElseThrow(CommentExceptions.COMMENT_NOT_FOUND::toException);
+
+        if (!comment.getUser().getId().equals(user.getId())) {
+            throw CommentExceptions.UNAUTHORIZED_COMMENT_MODIFICATION.toException();
+        }
+
+        comment.updateContent("삭제된 댓글입니다.");
     }
 
 
