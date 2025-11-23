@@ -2,6 +2,7 @@ package com.github.lunasis.domain.comment.service;
 
 import com.github.lunasis.domain.comment.dto.request.CreateCommentRequest;
 import com.github.lunasis.domain.comment.dto.request.ModifyCommentRequest;
+import com.github.lunasis.domain.comment.dto.response.CommentListResponse;
 import com.github.lunasis.domain.comment.dto.response.CommentResponse;
 import com.github.lunasis.domain.comment.dto.response.ModifyCommentResponse;
 import com.github.lunasis.domain.comment.entity.Comment;
@@ -14,6 +15,7 @@ import com.github.lunasis.domain.post.repository.PostRepository;
 import com.github.lunasis.domain.user.entity.User;
 import com.github.lunasis.domain.user.exception.UserExceptions;
 import com.github.lunasis.domain.user.repository.UserRepository;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -94,5 +96,12 @@ public class CommentService {
         comment.updateContent("삭제된 댓글입니다.");
     }
 
+    @Transactional(readOnly = true)
+    public List<CommentListResponse> getCommentsByPost(UUID userId, UUID postId) {
+        List<Comment> comments = commentRepository.findByPostIdWithReplies(postId);
 
+        return comments.stream()
+                .map(comment -> CommentListResponse.from(comment, userId))
+                .toList();
+    }
 }

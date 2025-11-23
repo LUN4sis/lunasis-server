@@ -2,17 +2,20 @@ package com.github.lunasis.domain.comment.controller;
 
 import com.github.lunasis.domain.comment.dto.request.CreateCommentRequest;
 import com.github.lunasis.domain.comment.dto.request.ModifyCommentRequest;
+import com.github.lunasis.domain.comment.dto.response.CommentListResponse;
 import com.github.lunasis.domain.comment.dto.response.CommentResponse;
 import com.github.lunasis.domain.comment.dto.response.ModifyCommentResponse;
 import com.github.lunasis.domain.comment.service.CommentService;
 import com.github.lunasis.domain.user.entity.User;
 import com.github.lunasis.global.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,5 +56,13 @@ public class CommentController {
 
         commentService.deleteComment(user, commentId);
         return ApiResponse.ok();
+    }
+
+    @GetMapping("/{postId}/comments")
+    @Operation(summary = "특정 게시글의 댓글 목록 조회")
+    public ApiResponse<List<CommentListResponse>> getCommentsByPost(@AuthenticationPrincipal User user,
+                                                                    @PathVariable UUID postId) {
+
+        return ApiResponse.ok(commentService.getCommentsByPost(user.getId(), postId));
     }
 }
