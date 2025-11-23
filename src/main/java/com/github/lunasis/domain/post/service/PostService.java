@@ -3,7 +3,9 @@ package com.github.lunasis.domain.post.service;
 import com.github.lunasis.domain.post.dto.request.CreatePostRequest;
 import com.github.lunasis.domain.post.dto.request.ModifyPostRequest;
 import com.github.lunasis.domain.post.dto.response.PostInfoResponse;
+import com.github.lunasis.domain.post.dto.response.PostListResponse;
 import com.github.lunasis.domain.post.dto.response.SimpleAuthorResponse;
+import com.github.lunasis.domain.post.entity.Category;
 import com.github.lunasis.domain.post.entity.Post;
 import com.github.lunasis.domain.post.exception.PostExceptions;
 import com.github.lunasis.domain.post.repository.PostRepository;
@@ -12,6 +14,8 @@ import com.github.lunasis.domain.user.exception.UserExceptions;
 import com.github.lunasis.domain.user.repository.UserRepository;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -118,5 +122,13 @@ public class PostService {
         }
 
         user.removeBookmark(postId);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<PostListResponse> getPosts(User user, Category category, Pageable pageable) {
+
+        Page<Post> posts = postRepository.findAllWithUserAndComments(category, pageable);
+
+        return posts.map(post -> PostListResponse.from(post, user.isBookmarked(post.getId())));
     }
 }
