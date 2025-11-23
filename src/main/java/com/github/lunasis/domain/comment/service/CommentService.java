@@ -68,6 +68,7 @@ public class CommentService {
                 .build();
     }
 
+    @Transactional
     public ModifyCommentResponse updateComment(User user, UUID commentId, ModifyCommentRequest request) {
 
         Comment comment = commentRepository.findByIdWithUser(commentId)
@@ -84,6 +85,7 @@ public class CommentService {
                 .build();
     }
 
+    @Transactional
     public void deleteComment(User user, UUID commentId) {
 
         Comment comment = commentRepository.findByIdWithUser(commentId)
