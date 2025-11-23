@@ -77,6 +77,14 @@ public class User {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Post> posts;
 
+    @ElementCollection
+    @CollectionTable(
+            name = "user_bookmarks",
+            joinColumns = @JoinColumn(name = "user_id")
+    )
+    @Column(name = "bookmarks")
+    @Builder.Default
+    private Set<UUID> bookmarkedPostIds = new HashSet<>();
 
     public void update(UpdateUserInfo updateUserInfo) {
 
@@ -85,6 +93,18 @@ public class User {
         this.insurance = updateUserInfo.insurance();
         this.privateChat = updateUserInfo.privateChat();
 
+    }
+
+    public void addBookmark(UUID postId) {
+        this.bookmarkedPostIds.add(postId);
+    }
+
+    public void removeBookmark(UUID postId) {
+        this.bookmarkedPostIds.remove(postId);
+    }
+
+    public boolean isBookmarked(UUID postId) {
+        return this.bookmarkedPostIds.contains(postId);
     }
 
 }

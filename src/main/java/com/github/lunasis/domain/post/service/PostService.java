@@ -48,9 +48,7 @@ public class PostService {
                 .orElseThrow(PostExceptions.POST_NOT_FOUND::toException);
 
         boolean isAuthor = post.getUser().getId().equals(user.getId());
-
-        //TODO: 북마크 여부는 추후 구현
-        boolean isBookmarked = false;
+        boolean isBookmarked = user.isBookmarked(postId);
 
         return PostInfoResponse.builder()
                 .postId(post.getId())
@@ -94,5 +92,31 @@ public class PostService {
 
         //포스트 삭제
         postRepository.delete(post);
+    }
+
+    @Transactional
+    public void addBookmark(UUID userId, UUID postId) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(UserExceptions.USER_NOT_FOUND::toException);
+
+        if (!postRepository.existsById(postId)) {
+            throw PostExceptions.POST_NOT_FOUND.toException();
+        }
+
+        user.addBookmark(postId);
+    }
+
+    @Transactional
+    public void removeBookmark(UUID userId, UUID postId) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(UserExceptions.USER_NOT_FOUND::toException);
+
+        if (!user.isBookmarked(postId)) {
+            throw PostExceptions.BOOKMARK_NOT_FOUND.toException();
+        }
+
+        user.removeBookmark(postId);
     }
 }

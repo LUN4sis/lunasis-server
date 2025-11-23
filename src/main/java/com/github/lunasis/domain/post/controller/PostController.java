@@ -58,4 +58,20 @@ public class PostController {
         postService.deletePost(user, postId);
         return ApiResponse.ok();
     }
+
+    @PostMapping("/{postId}/bookmark")
+    @Operation(summary = "게시물 북마크 추가")
+    public ApiResponse<Void> addBookmark(@AuthenticationPrincipal User user, @PathVariable UUID postId) {
+
+        postService.addBookmark(user.getId(), postId);
+        return ApiResponse.ok();
+    }
+
+    @DeleteMapping("/{postId}/bookmark")
+    @Operation(summary = "게시물 북마크 삭제")
+    public ApiResponse<Void> removeBookmark(@AuthenticationPrincipal User user, @PathVariable UUID postId) {
+
+        postService.removeBookmark(user.getId(), postId);
+        return ApiResponse.ok();
+    }
 }
