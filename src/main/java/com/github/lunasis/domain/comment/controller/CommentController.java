@@ -58,7 +58,7 @@ public class CommentController {
         return ApiResponse.ok();
     }
 
-    @GetMapping("/{postId}/comments")
+    @GetMapping("/{postId}")
     @Operation(summary = "특정 게시글의 댓글 목록 조회")
     public ApiResponse<List<CommentListResponse>> getCommentsByPost(@AuthenticationPrincipal User user,
                                                                     @PathVariable UUID postId) {
