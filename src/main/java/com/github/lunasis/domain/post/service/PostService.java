@@ -45,13 +45,16 @@ public class PostService {
         return PostInfoResponse.of(user, newPost);
     }
 
-    @Transactional
-    public PostInfoResponse getPost(User user, UUID postId) {
+    @Transactional(readOnly = true)
+    public PostInfoResponse getPost(UUID userId, UUID postId) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(UserExceptions.USER_NOT_FOUND::toException);
 
         Post post = postRepository.findByIdWithUser(postId)
                 .orElseThrow(PostExceptions.POST_NOT_FOUND::toException);
 
-        boolean isAuthor = post.getUser().getId().equals(user.getId());
+        boolean isAuthor = post.getUser().getId().equals(userId);
         boolean isBookmarked = user.isBookmarked(postId);
 
         return PostInfoResponse.builder()
@@ -125,7 +128,10 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public Page<PostListResponse> getPosts(User user, Category category, Pageable pageable) {
+    public Page<PostListResponse> getPosts(UUID userId, Category category, Pageable pageable) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(UserExceptions.USER_NOT_FOUND::toException);
 
         Page<Post> posts = postRepository.findAllWithUserAndComments(category, pageable);
 

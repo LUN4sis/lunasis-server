@@ -40,7 +40,7 @@ public class PostController {
                                                         @RequestParam(required = false) Category category,
                                                         @PageableDefault(size = 10, sort = "createdAt") Pageable pageable) {
 
-        return ApiResponse.ok(postService.getPosts(user, category, pageable));
+        return ApiResponse.ok(postService.getPosts(user.getId(), category, pageable));
     }
 
     @PostMapping
@@ -55,7 +55,7 @@ public class PostController {
     @Operation(summary = " 게시물 상세 조회 ")
     public ApiResponse<PostInfoResponse> getPost(@AuthenticationPrincipal User user, @PathVariable UUID postId) {
 
-        return ApiResponse.ok(postService.getPost(user, postId));
+        return ApiResponse.ok(postService.getPost(user.getId(), postId));
     }
 
     @PatchMapping("/{postId}")
