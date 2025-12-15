@@ -54,6 +54,8 @@ public class PostService {
         Post post = postRepository.findByIdWithUser(postId)
                 .orElseThrow(PostExceptions.POST_NOT_FOUND::toException);
 
+        post.increaseViewCount();
+
         boolean isAuthor = post.getUser().getId().equals(userId);
         boolean isBookmarked = user.isBookmarked(postId);
 

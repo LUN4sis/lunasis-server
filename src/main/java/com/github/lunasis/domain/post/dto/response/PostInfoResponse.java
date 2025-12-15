@@ -15,7 +15,8 @@ public record PostInfoResponse(
         boolean isAuthor,
         boolean isBookmarked,
         LocalDateTime createdAt,
-        LocalDateTime updatedAt
+        LocalDateTime updatedAt,
+        Integer viewCount
 
 ) {
     //새 포스터 생성이여서 북마크 여부는 false, 작성자 여부는 true로 고정
@@ -29,6 +30,7 @@ public record PostInfoResponse(
                 .isBookmarked(false)
                 .createdAt(post.getCreatedAt())
                 .updatedAt(post.getUpdatedAt())
+                .viewCount(post.getViewCount() + 1)
                 .build();
     }
 }
