@@ -13,6 +13,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -35,10 +36,19 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping
-    @Operation(summary = "게시물 목록 조회")
+    @Operation(summary = "게시물 목록 조회(게시글 메인 페이지 조회수 기준)")
     public ApiResponse<Page<PostListResponse>> getPosts(@AuthenticationPrincipal User user,
                                                         @RequestParam(required = false) Category category,
-                                                        @PageableDefault(size = 10, sort = "createdAt") Pageable pageable) {
+                                                        @PageableDefault(size = 10, sort = "viewCount", direction = Direction.DESC) Pageable pageable) {
+
+        return ApiResponse.ok(postService.getPosts(user.getId(), category, pageable));
+    }
+
+    @GetMapping
+    @Operation(summary = "게시글 목록 상세 조회(최신순)")
+    public ApiResponse<Page<PostListResponse>> getDetailPosts(@AuthenticationPrincipal User user,
+                                                              @RequestParam(required = false) Category category,
+                                                              @PageableDefault(size = 10, sort = "createdAt") Pageable pageable) {
 
         return ApiResponse.ok(postService.getPosts(user.getId(), category, pageable));
     }
