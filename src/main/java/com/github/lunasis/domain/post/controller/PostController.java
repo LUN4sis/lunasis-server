@@ -2,6 +2,7 @@ package com.github.lunasis.domain.post.controller;
 
 import com.github.lunasis.domain.post.dto.request.CreatePostRequest;
 import com.github.lunasis.domain.post.dto.request.ModifyPostRequest;
+import com.github.lunasis.domain.post.dto.request.SearchPostRequest;
 import com.github.lunasis.domain.post.dto.response.PostInfoResponse;
 import com.github.lunasis.domain.post.dto.response.PostListResponse;
 import com.github.lunasis.domain.post.entity.Category;
@@ -98,5 +99,15 @@ public class PostController {
 
         postService.removeBookmark(user.getId(), postId);
         return ApiResponse.ok();
+    }
+
+    @GetMapping("/search")
+    @Operation(summary = "게시물 검색")
+    public ApiResponse<Page<PostListResponse>> getSearchedPosts(@AuthenticationPrincipal User user,
+                                                                @RequestBody SearchPostRequest request,
+                                                                @RequestParam(required = false) Category category,
+                                                                @PageableDefault(size = 10, sort = "viewCount", direction = Direction.DESC) Pageable pageable) {
+
+        return ApiResponse.ok(postService.getSearchPosts(user.getId(), request.searchTerm(), category, pageable));
     }
 }

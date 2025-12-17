@@ -18,9 +18,17 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
     @Query("SELECT p FROM Post p LEFT JOIN FETCH p.comments WHERE p.id = :id")
     Optional<Post> findByIdWithComments(@Param("id") UUID id);
 
-    @Query("SELECT DISTINCT p FROM Post p " +
+    @Query("SELECT p FROM Post p " +
             "JOIN FETCH p.user " +
-            "LEFT JOIN FETCH p.comments " +
             "WHERE (:category IS NULL OR p.category = :category)")
-    Page<Post> findAllWithUserAndComments(@Param("category") Category category, Pageable pageable);
+    Page<Post> findAllWithUser(@Param("category") Category category, Pageable pageable);
+
+    @Query("SELECT p FROM Post p " +
+            "JOIN FETCH p.user " +
+            "WHERE (LOWER(p.title) LIKE LOWER(CONCAT('%', :searchTerm, '%')) " +
+            "OR LOWER(p.content) LIKE LOWER(CONCAT('%', :searchTerm, '%'))) " +
+            "AND (:category IS NULL OR p.category = :category)")
+    Page<Post> findBySearchTermAndCategory(@Param("searchTerm") String searchTerm,
+                                           @Param("category") Category category,
+                                           Pageable pageable);
 }

@@ -135,7 +135,18 @@ public class PostService {
         User user = userRepository.findById(userId)
                 .orElseThrow(UserExceptions.USER_NOT_FOUND::toException);
 
-        Page<Post> posts = postRepository.findAllWithUserAndComments(category, pageable);
+        Page<Post> posts = postRepository.findAllWithUser(category, pageable);
+
+        return posts.map(post -> PostListResponse.from(post, user.isBookmarked(post.getId())));
+    }
+
+    @Transactional(readOnly = true)
+    public Page<PostListResponse> getSearchPosts(UUID userId, String searchTerm, Category category, Pageable pageable) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(UserExceptions.USER_NOT_FOUND::toException);
+
+        Page<Post> posts = postRepository.findBySearchTermAndCategory(searchTerm, category, pageable);
 
         return posts.map(post -> PostListResponse.from(post, user.isBookmarked(post.getId())));
     }
