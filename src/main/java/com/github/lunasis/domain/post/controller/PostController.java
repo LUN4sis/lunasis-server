@@ -45,8 +45,8 @@ public class PostController {
         return ApiResponse.ok(postService.getPosts(user.getId(), category, pageable));
     }
 
-    @GetMapping
-    @Operation(summary = "게시글 목록 상세 조회(최신순)")
+    @GetMapping("/total")
+    @Operation(summary = "게시글 목록 전체 조회(최신순)")
     public ApiResponse<Page<PostListResponse>> getDetailPosts(@AuthenticationPrincipal User user,
                                                               @RequestParam(required = false) Category category,
                                                               @PageableDefault(size = 10, sort = "createdAt") Pageable pageable) {
