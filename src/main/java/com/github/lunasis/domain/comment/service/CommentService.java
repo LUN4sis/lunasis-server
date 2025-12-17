@@ -55,6 +55,7 @@ public class CommentService {
                 .build());
 
         post.getComments().add(comment);
+        post.increaseCommentCount();
 
         return CommentResponse.builder()
                 .commentId(comment.getId())

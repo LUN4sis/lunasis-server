@@ -67,6 +67,10 @@ public class Post {
     @Builder.Default
     private Integer viewCount = 0;
 
+    @Column(name = "comment_count", nullable = false)
+    @Builder.Default
+    private Integer commentCount = 0;
+
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
     @Builder.Default
     private List<Comment> comments = new ArrayList<>();
@@ -83,5 +87,9 @@ public class Post {
 
     public void increaseViewCount() {
         this.viewCount += 1;
+    }
+
+    public void increaseCommentCount() {
+        this.commentCount += 1;
     }
 }
