@@ -21,7 +21,7 @@ public record PostListResponse(
                 .author(SimpleAuthorResponse.from(post.getUser()))
                 .title(post.getTitle())
                 .content(post.getContent())
-                .commentCount(post.getComments().size())
+                .commentCount(post.getCommentCount())
                 .isBookmarked(isBookmarked)
                 .createdAt(post.getCreatedAt())
                 .build();
