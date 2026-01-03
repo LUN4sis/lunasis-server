@@ -45,8 +45,8 @@ public class User {
     @Column(unique = true)
     private String nickname;
 
-    @Column(name = "google_id", nullable = false, unique = true)
-    private String googleId;
+    @Column(name = "oauth_id", nullable = false, unique = true)
+    private String oauthId;
 
     @Column(name = "age")
     private Integer age;
@@ -57,6 +57,10 @@ public class User {
     @Column(name = "private_chat")
     @Builder.Default
     private Boolean privateChat = false;
+
+    @Column(name = "first_login")
+    @Builder.Default
+    private boolean firstLogin = true;
 
     @ElementCollection(targetClass = Insurance.class)
     @CollectionTable(
