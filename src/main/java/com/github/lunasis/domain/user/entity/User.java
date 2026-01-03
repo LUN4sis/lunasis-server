@@ -60,7 +60,7 @@ public class User {
 
     @Column(name = "first_login")
     @Builder.Default
-    private boolean firstLogin = true;
+    private Boolean firstLogin = true;
 
     @ElementCollection(targetClass = Insurance.class)
     @CollectionTable(
@@ -109,6 +109,10 @@ public class User {
 
     public boolean isBookmarked(UUID postId) {
         return this.bookmarkedPostIds.contains(postId);
+    }
+
+    public void updateFirstLogin() {
+        this.firstLogin = false;
     }
 
 }

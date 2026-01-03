@@ -39,6 +39,8 @@ public class UserService {
 
         User currentUser = userRepository.findById(user.getId())
                 .orElseThrow(UserExceptions.USER_NOT_FOUND::toException);
+
+        currentUser.updateFirstLogin();
         currentUser.getPreference().updateUserPreference(updatePreference);
         userRepository.save(currentUser);
     }
