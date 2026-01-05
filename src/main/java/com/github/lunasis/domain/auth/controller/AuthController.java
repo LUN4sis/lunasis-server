@@ -1,6 +1,7 @@
 package com.github.lunasis.domain.auth.controller;
 
-import com.github.lunasis.domain.auth.dto.request.LoginCodeRequest;
+import com.github.lunasis.domain.auth.dto.request.AppleLoginRequest;
+import com.github.lunasis.domain.auth.dto.request.GoogleLoginRequest;
 import com.github.lunasis.domain.auth.dto.request.LogoutRequest;
 import com.github.lunasis.domain.auth.dto.request.RefreshTokenRequest;
 import com.github.lunasis.domain.auth.dto.response.LoginResponse;
@@ -27,8 +28,14 @@ public class AuthController {
 
     @PostMapping("/google")
     @Operation(summary = "구글 로그인")
-    public ApiResponse<LoginResponse> googleLogin(@RequestBody @Valid LoginCodeRequest loginCodeRequest) {
-        return ApiResponse.ok(authService.googleLogin(loginCodeRequest.loginCode()));
+    public ApiResponse<LoginResponse> googleLogin(@RequestBody @Valid GoogleLoginRequest googleLoginRequest) {
+        return ApiResponse.ok(authService.googleLogin(googleLoginRequest.loginCode()));
+    }
+
+    @PostMapping("/apple")
+    @Operation(summary = "애플 로그인")
+    public ApiResponse<LoginResponse> appleLogin(@RequestBody @Valid AppleLoginRequest appleLoginRequest) {
+        return ApiResponse.ok(authService.appleLogin(appleLoginRequest));
     }
 
 
