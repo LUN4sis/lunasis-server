@@ -2,7 +2,8 @@ package com.github.lunasis.domain.auth.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 
-public record LoginCodeRequest(
-        @NotBlank String loginCode
+public record AppleLoginRequest(
+        @NotBlank String loginCode,
+        @NotBlank String name
 ) {
 }
