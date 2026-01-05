@@ -58,16 +58,7 @@ public class AuthService {
 
         User user = optionalUser.orElseGet(() -> from(googleUserInfo));
 
-        String accessToken = jwtUtil.generateAccessToken(user);
-        String refreshToken = jwtUtil.generateRefreshToken(user);
-
-        return LoginResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .firstLogin(user.getFirstLogin())
-                .nickname(user.getNickname())
-                .privateChat(user.getPrivateChat())
-                .build();
+        return generateLoginInfo(user);
     }
 
     private User from(GoogleUserInfo googleUserInfo) {
@@ -118,16 +109,7 @@ public class AuthService {
 
         User user = optionalUser.orElseGet(() -> of(appleLoginRequest.name(), appleAuthId));
 
-        String accessToken = jwtUtil.generateAccessToken(user);
-        String refreshToken = jwtUtil.generateRefreshToken(user);
-
-        return LoginResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .firstLogin(user.getFirstLogin())
-                .nickname(user.getNickname())
-                .privateChat(user.getPrivateChat())
-                .build();
+        return generateLoginInfo(user);
     }
 
     private User of(String name, String authId) {
@@ -194,6 +176,19 @@ public class AuthService {
 
         return JWT.decode(appleTokenResponseDto.idToken());
 
+    }
+
+    private LoginResponse generateLoginInfo(User user) {
+        String accessToken = jwtUtil.generateAccessToken(user);
+        String refreshToken = jwtUtil.generateRefreshToken(user);
+
+        return LoginResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .firstLogin(user.getFirstLogin())
+                .nickname(user.getNickname())
+                .privateChat(user.getPrivateChat())
+                .build();
     }
 
     @PreAuthorize("isAuthenticated()")
