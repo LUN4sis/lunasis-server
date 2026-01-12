@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,6 +30,7 @@ public class ChatController {
     private final ChatService chatService;
 
     @PostMapping
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "채팅 시작 api")
     public ApiResponse<StartChatResponse> startChat(@AuthenticationPrincipal User user,
                                                     @Valid @RequestBody QuestionRequest questionRequest) {
@@ -37,6 +39,7 @@ public class ChatController {
     }
 
     @PostMapping("/{chatRoom}")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "채팅 보내기 api")
     public ApiResponse<ChatResponse> chat(@AuthenticationPrincipal User user, @PathVariable ChatRoom chatRoom,
                                           @Valid @RequestBody QuestionRequest questionRequest) {
@@ -52,6 +55,7 @@ public class ChatController {
     }
 
     @GetMapping
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "채팅방 목록 불러오기 api")
     public ApiResponse<List<ChatListResponse>> getChatRooms(@AuthenticationPrincipal User user) {
 
@@ -59,6 +63,7 @@ public class ChatController {
     }
 
     @GetMapping("/{chatRoom}")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "채팅방 대화 내용 불러오기")
     public ApiResponse<List<ChatHistoryResponse>> getChatHistory(@AuthenticationPrincipal User user,
                                                                  @PathVariable ChatRoom chatRoom) {
