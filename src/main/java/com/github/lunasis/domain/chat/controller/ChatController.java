@@ -11,11 +11,15 @@ import com.github.lunasis.domain.user.entity.User;
 import com.github.lunasis.global.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/chats")
@@ -26,7 +30,8 @@ public class ChatController {
 
     @PostMapping
     @Operation(summary = "채팅 시작 api")
-    public ApiResponse<StartChatResponse> startChat(@AuthenticationPrincipal User user, @Valid @RequestBody QuestionRequest questionRequest) {
+    public ApiResponse<StartChatResponse> startChat(@AuthenticationPrincipal User user,
+                                                    @Valid @RequestBody QuestionRequest questionRequest) {
 
         return ApiResponse.ok(chatService.startChat(user, questionRequest));
     }
@@ -39,6 +44,13 @@ public class ChatController {
         return ApiResponse.ok(chatService.chat(user, chatRoom, questionRequest));
     }
 
+    @PostMapping("/anonymous")
+    @Operation(summary = "익명 채팅 보내기 api")
+    public ApiResponse<ChatResponse> anonymousChar(@Valid @RequestBody QuestionRequest questionRequest) {
+
+        return ApiResponse.ok(chatService.anonymousChat(questionRequest));
+    }
+
     @GetMapping
     @Operation(summary = "채팅방 목록 불러오기 api")
     public ApiResponse<List<ChatListResponse>> getChatRooms(@AuthenticationPrincipal User user) {
@@ -48,7 +60,8 @@ public class ChatController {
 
     @GetMapping("/{chatRoom}")
     @Operation(summary = "채팅방 대화 내용 불러오기")
-    public ApiResponse<List<ChatHistoryResponse>> getChatHistory(@AuthenticationPrincipal User user, @PathVariable ChatRoom chatRoom) {
+    public ApiResponse<List<ChatHistoryResponse>> getChatHistory(@AuthenticationPrincipal User user,
+                                                                 @PathVariable ChatRoom chatRoom) {
 
         return ApiResponse.ok(chatService.getChatHistory(user, chatRoom));
     }

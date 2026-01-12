@@ -10,11 +10,11 @@ import com.github.lunasis.domain.chat.entity.ChatRoom;
 import com.github.lunasis.domain.chat.exception.ChatsExceptions;
 import com.github.lunasis.domain.chat.repository.ChatRoomRepository;
 import com.github.lunasis.domain.user.entity.User;
+import jakarta.transaction.Transactional;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +23,7 @@ public class ChatService {
 
     private final ChatRoomRepository chatRoomRepository;
 
+    @Transactional
     public StartChatResponse startChat(User user, QuestionRequest questionRequest) {
 
         ChatRoom chatRoom = ChatRoom.builder()
@@ -48,6 +49,7 @@ public class ChatService {
                 .build();
     }
 
+    @Transactional
     public ChatResponse chat(User user, ChatRoom chatRoom, QuestionRequest questionRequest) {
 
         if (!user.getId().equals(chatRoom.getUser().getId())) {
@@ -66,6 +68,17 @@ public class ChatService {
 
         chatRoom.getChats().add(chat);
         chatRoomRepository.save(chatRoom);
+
+        return ChatResponse.builder()
+                .answer(answer)
+                .build();
+    }
+
+    public ChatResponse anonymousChat(QuestionRequest questionRequest) {
+
+        //TODO: llm에 질문 전달
+
+        String answer = "test answer";
 
         return ChatResponse.builder()
                 .answer(answer)
