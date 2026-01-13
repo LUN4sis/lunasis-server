@@ -26,13 +26,15 @@ public class ChatService {
     @Transactional
     public StartChatResponse startChat(User user, QuestionRequest questionRequest) {
 
-        ChatRoom chatRoom = ChatRoom.builder()
+        ChatRoom chatRoom = chatRoomRepository.save(ChatRoom.builder()
                 .user(user)
                 .privateChat(user.getPrivateChat())
-                .build();
+                .build());
 
         //TODO: llm에 전달 해주기
         String answer = "test answer";
+        String title = "test title";
+        chatRoom.updateTitle(title);
 
         Chat chat = Chat.builder()
                 .chatRoom(chatRoom)
@@ -45,6 +47,7 @@ public class ChatService {
 
         return StartChatResponse.builder()
                 .chatRoomId(chatRoom.getId())
+                .title(title)
                 .answer(answer)
                 .build();
     }
