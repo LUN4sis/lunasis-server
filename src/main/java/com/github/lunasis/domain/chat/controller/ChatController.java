@@ -1,6 +1,7 @@
 package com.github.lunasis.domain.chat.controller;
 
 import com.github.lunasis.domain.chat.dto.request.QuestionRequest;
+import com.github.lunasis.domain.chat.dto.request.UpdateTitleRequest;
 import com.github.lunasis.domain.chat.dto.response.ChatHistoryResponse;
 import com.github.lunasis.domain.chat.dto.response.ChatListResponse;
 import com.github.lunasis.domain.chat.dto.response.ChatResponse;
@@ -12,6 +13,7 @@ import com.github.lunasis.global.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -70,4 +72,14 @@ public class ChatController {
 
         return ApiResponse.ok(chatService.getChatHistory(user, chatRoom));
     }
+
+    @PostMapping("/{chatRoom}/title")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "채팅방 제목 수정")
+    public void updateTitle(@AuthenticationPrincipal User user, @PathVariable UUID chatRoom, @RequestBody
+    UpdateTitleRequest request) {
+
+        chatService.updateTitle(user, chatRoom, request.title());
+    }
+
 }

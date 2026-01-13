@@ -12,6 +12,7 @@ import com.github.lunasis.domain.chat.repository.ChatRoomRepository;
 import com.github.lunasis.domain.user.entity.User;
 import jakarta.transaction.Transactional;
 import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -55,7 +56,7 @@ public class ChatService {
     @Transactional
     public ChatResponse chat(User user, ChatRoom chatRoom, QuestionRequest questionRequest) {
 
-        if (!user.getId().equals(chatRoom.getUser().getId())) {
+        if (!hasChatRoomAccess(user, chatRoom)) {
             throw ChatsExceptions.USER_NOT_ALLOWED.toException();
         }
 
@@ -75,6 +76,26 @@ public class ChatService {
         return ChatResponse.builder()
                 .answer(answer)
                 .build();
+    }
+
+    @Transactional
+    public void updateTitle(User user, UUID chatRoomId, String title) {
+
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(ChatsExceptions.CHATROOM_NOT_FOUND::toException);
+
+        if (!hasChatRoomAccess(user, chatRoom)) {
+            throw ChatsExceptions.USER_NOT_ALLOWED.toException();
+        }
+
+        chatRoom.updateTitle(title);
+        chatRoomRepository.save(chatRoom);
+
+    }
+
+    private boolean hasChatRoomAccess(User user, ChatRoom chatRoom) {
+
+        return user.getId().equals(chatRoom.getUser().getId());
     }
 
     public ChatResponse anonymousChat(QuestionRequest questionRequest) {
@@ -101,4 +122,6 @@ public class ChatService {
 
         return chatRoom.getChats().stream().map(ChatHistoryResponse::from).toList();
     }
+
+
 }
