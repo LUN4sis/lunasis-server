@@ -6,7 +6,6 @@ import com.github.lunasis.domain.chat.dto.response.ChatHistoryResponse;
 import com.github.lunasis.domain.chat.dto.response.ChatListResponse;
 import com.github.lunasis.domain.chat.dto.response.ChatResponse;
 import com.github.lunasis.domain.chat.dto.response.StartChatResponse;
-import com.github.lunasis.domain.chat.entity.ChatRoom;
 import com.github.lunasis.domain.chat.service.ChatService;
 import com.github.lunasis.domain.user.entity.User;
 import com.github.lunasis.global.dto.ApiResponse;
@@ -40,13 +39,13 @@ public class ChatController {
         return ApiResponse.ok(chatService.startChat(user, questionRequest));
     }
 
-    @PostMapping("/{chatRoom}")
+    @PostMapping("/{chatRoomId}")
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "채팅 보내기 api")
-    public ApiResponse<ChatResponse> chat(@AuthenticationPrincipal User user, @PathVariable ChatRoom chatRoom,
+    public ApiResponse<ChatResponse> chat(@AuthenticationPrincipal User user, @PathVariable UUID chatRoomId,
                                           @Valid @RequestBody QuestionRequest questionRequest) {
 
-        return ApiResponse.ok(chatService.chat(user, chatRoom, questionRequest));
+        return ApiResponse.ok(chatService.chat(user, chatRoomId, questionRequest));
     }
 
     @PostMapping("/anonymous")
@@ -64,13 +63,13 @@ public class ChatController {
         return ApiResponse.ok(chatService.getChatRooms(user));
     }
 
-    @GetMapping("/{chatRoom}")
+    @GetMapping("/{chatRoomId}")
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "채팅방 대화 내용 불러오기")
     public ApiResponse<List<ChatHistoryResponse>> getChatHistory(@AuthenticationPrincipal User user,
-                                                                 @PathVariable ChatRoom chatRoom) {
+                                                                 @PathVariable UUID chatRoomId) {
 
-        return ApiResponse.ok(chatService.getChatHistory(user, chatRoom));
+        return ApiResponse.ok(chatService.getChatHistory(user, chatRoomId));
     }
 
     @PostMapping("/{chatRoomId}/title")

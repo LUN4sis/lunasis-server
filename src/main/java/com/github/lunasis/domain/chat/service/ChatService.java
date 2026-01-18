@@ -14,14 +14,19 @@ import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
 @RequiredArgsConstructor
 @PreAuthorize("isAuthenticated()")
 public class ChatService {
 
+    @Value("${fastapi.url}")
+    private String fastapiUrl;
+    private WebClient webClient;
     private final ChatRoomRepository chatRoomRepository;
 
     @Transactional
@@ -53,8 +58,17 @@ public class ChatService {
                 .build();
     }
 
+//    private LlmChatResponse SendFirstChat(UUID chatRoomId) {
+//        webClient.post()
+//                .uri(fastapiUrl+"/api/chat/{chatRoomId}",chatRoomId)
+//                .contentType(MediaType.APPLICATION_JSON);
+//    }
+
     @Transactional
-    public ChatResponse chat(User user, ChatRoom chatRoom, QuestionRequest questionRequest) {
+    public ChatResponse chat(User user, UUID chatRoomId, QuestionRequest questionRequest) {
+
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(ChatsExceptions.CHATROOM_NOT_FOUND::toException);
 
         if (!hasChatRoomAccess(user, chatRoom)) {
             throw ChatsExceptions.USER_NOT_ALLOWED.toException();
@@ -114,7 +128,10 @@ public class ChatService {
         return user.getChatRooms().stream().map(ChatListResponse::from).toList();
     }
 
-    public List<ChatHistoryResponse> getChatHistory(User user, ChatRoom chatRoom) {
+    public List<ChatHistoryResponse> getChatHistory(User user, UUID chatRoomId) {
+
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+                .orElseThrow(ChatsExceptions.CHATROOM_NOT_FOUND::toException);
 
         if (!user.getId().equals(chatRoom.getUser().getId())) {
             throw ChatsExceptions.USER_NOT_ALLOWED.toException();
