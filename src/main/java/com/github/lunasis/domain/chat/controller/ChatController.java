@@ -73,13 +73,13 @@ public class ChatController {
         return ApiResponse.ok(chatService.getChatHistory(user, chatRoom));
     }
 
-    @PostMapping("/{chatRoom}/title")
+    @PostMapping("/{chatRoomId}/title")
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "채팅방 제목 수정")
-    public void updateTitle(@AuthenticationPrincipal User user, @PathVariable UUID chatRoom, @RequestBody
+    public void updateTitle(@AuthenticationPrincipal User user, @PathVariable UUID chatRoomId, @RequestBody
     UpdateTitleRequest request) {
 
-        chatService.updateTitle(user, chatRoom, request.title());
+        chatService.updateTitle(user, chatRoomId, request.title());
     }
 
 }
