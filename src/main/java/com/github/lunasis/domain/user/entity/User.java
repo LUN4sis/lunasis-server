@@ -90,6 +90,11 @@ public class User {
     @Builder.Default
     private Set<UUID> bookmarkedPostIds = new HashSet<>();
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "chat_setting_id")
+    @Builder.Default
+    private ChatSetting chatSetting = ChatSetting.builder().build();
+
     public void update(UpdateUserInfo updateUserInfo) {
 
         this.nickname = updateUserInfo.nickname();
