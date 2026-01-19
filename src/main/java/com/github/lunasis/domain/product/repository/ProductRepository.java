@@ -9,4 +9,6 @@ import java.util.UUID;
 
 public interface ProductRepository extends JpaRepository<Product, UUID> {
     List<Product> findAllByCategory(ProductCategory category);
+
+    List<Product> findAllByCategoryOrderByAverageRatingDesc(ProductCategory category);
 }

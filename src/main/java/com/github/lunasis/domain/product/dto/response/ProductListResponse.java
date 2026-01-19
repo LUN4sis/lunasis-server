@@ -13,7 +13,9 @@ public record ProductListResponse(
         String name,
         String image,
         String description,
-        List<String> badges
+        List<String> badges,
+        Double averageRating,
+        Integer ratingCount
 ) {
     public static ProductListResponse from(Product product) {
         return ProductListResponse.builder()
@@ -22,6 +24,8 @@ public record ProductListResponse(
                 .image(product.getImage())
                 .description(product.getDescription())
                 .badges(product.getBadges())
+                .averageRating(product.getAverageRating())
+                .ratingCount(product.getRatingCount())
                 .build();
     }
 }
