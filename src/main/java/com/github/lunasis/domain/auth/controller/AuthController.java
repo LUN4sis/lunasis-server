@@ -11,6 +11,7 @@ import com.github.lunasis.global.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
@@ -29,7 +31,10 @@ public class AuthController {
     @PostMapping("/google")
     @Operation(summary = "구글 로그인")
     public ApiResponse<LoginResponse> googleLogin(@RequestBody @Valid GoogleLoginRequest googleLoginRequest) {
-        return ApiResponse.ok(authService.googleLogin(googleLoginRequest.loginCode()));
+        log.info("[Controller] 구글 로그인 요청 수신 - loginCode: {}", googleLoginRequest.loginCode());
+        LoginResponse response = authService.googleLogin(googleLoginRequest.loginCode());
+        log.info("[Controller] 구글 로그인 응답 반환 - nickname: {}", response.nickname());
+        return ApiResponse.ok(response);
     }
 
     @PostMapping("/apple")
