@@ -41,6 +41,7 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+        default_batch_fetch_size: 100
     show-sql: true
 app:
   jwt:
