@@ -53,15 +53,21 @@ public class AuthService {
 
     @Transactional
     public LoginResponse googleLogin(String loginCode) {
+        log.info("[구글 로그인] 시작 - loginCode: {}", loginCode);
+
         String googleAccessToken = getAccessToken(loginCode);
+        log.info("[구글 로그인] Google Access Token 획득 성공");
+
         GoogleUserInfo googleUserInfo = getUserInfo(googleAccessToken);
+        log.info("[구글 로그인] 사용자 정보 조회 성공 - id: {}, name: {}", googleUserInfo.id(), googleUserInfo.name());
 
         Optional<User> optionalUser = userRepository.findByOauthId(googleUserInfo.id());
+        log.info("[구글 로그인] DB 사용자 조회 결과: {}", optionalUser.isPresent() ? "기존 사용자" : "신규 사용자");
 
         User user = optionalUser.orElseGet(() -> from(googleUserInfo));
 
         LoginResponse response = generateLoginInfo(user);
-        log.info("Login Response: " + response.nickname() + response.accessToken());
+        log.info("[구글 로그인] Login Response: nickname={}, accessToken={}", response.nickname(), response.accessToken());
 
         return response;
     }
