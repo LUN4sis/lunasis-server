@@ -19,6 +19,7 @@ import com.github.lunasis.global.property.GoogleProperty;
 import com.github.lunasis.global.security.jwt.JwtUtil;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
+import jakarta.transaction.Transactional;
 import java.net.URI;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
@@ -50,6 +51,7 @@ public class AuthService {
     private final GoogleProperty googleProperty;
     private final AppleProperty appleProperty;
 
+    @Transactional
     public LoginResponse googleLogin(String loginCode) {
         String googleAccessToken = getAccessToken(loginCode);
         GoogleUserInfo googleUserInfo = getUserInfo(googleAccessToken);
@@ -58,7 +60,10 @@ public class AuthService {
 
         User user = optionalUser.orElseGet(() -> from(googleUserInfo));
 
-        return generateLoginInfo(user);
+        LoginResponse response = generateLoginInfo(user);
+        log.info("Login Response: {}", response);
+
+        return response;
     }
 
     private User from(GoogleUserInfo googleUserInfo) {
