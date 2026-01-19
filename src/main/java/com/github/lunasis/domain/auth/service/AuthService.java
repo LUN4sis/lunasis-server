@@ -61,7 +61,7 @@ public class AuthService {
         User user = optionalUser.orElseGet(() -> from(googleUserInfo));
 
         LoginResponse response = generateLoginInfo(user);
-        log.info("Login Response: {}", response);
+        log.info("Login Response: " + response.nickname() + response.accessToken());
 
         return response;
     }
