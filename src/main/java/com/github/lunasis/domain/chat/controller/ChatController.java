@@ -36,7 +36,7 @@ public class ChatController {
     public ApiResponse<StartChatResponse> startChat(@AuthenticationPrincipal User user,
                                                     @Valid @RequestBody QuestionRequest questionRequest) {
 
-        return ApiResponse.ok(chatService.startChat(user, questionRequest));
+        return ApiResponse.ok(chatService.startChat(user.getId(), questionRequest));
     }
 
     @PostMapping("/{chatRoomId}")
@@ -75,8 +75,8 @@ public class ChatController {
     @PostMapping("/{chatRoomId}/title")
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "채팅방 제목 수정")
-    public void updateTitle(@AuthenticationPrincipal User user, @PathVariable UUID chatRoomId, @RequestBody
-    UpdateTitleRequest request) {
+    public void updateTitle(@AuthenticationPrincipal User user, @PathVariable UUID chatRoomId,
+                            @RequestBody UpdateTitleRequest request) {
 
         chatService.updateTitle(user, chatRoomId, request.title());
     }

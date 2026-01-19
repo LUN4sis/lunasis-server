@@ -55,5 +55,8 @@ apple:
   redirect-uri: ${APPLE_REDIRECT_URL}
   key-id: ${APPLE_KEY_ID}
 
+fastapi:
+  url: ${FAST_SERVER_URL}
+
 
 

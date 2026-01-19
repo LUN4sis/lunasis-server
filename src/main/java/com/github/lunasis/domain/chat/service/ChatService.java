@@ -1,51 +1,63 @@
 package com.github.lunasis.domain.chat.service;
 
+import com.github.lunasis.domain.chat.dto.request.LlmChatRequest;
 import com.github.lunasis.domain.chat.dto.request.QuestionRequest;
 import com.github.lunasis.domain.chat.dto.response.ChatHistoryResponse;
 import com.github.lunasis.domain.chat.dto.response.ChatListResponse;
 import com.github.lunasis.domain.chat.dto.response.ChatResponse;
+import com.github.lunasis.domain.chat.dto.response.LlmStartChatResponse;
 import com.github.lunasis.domain.chat.dto.response.StartChatResponse;
 import com.github.lunasis.domain.chat.entity.Chat;
 import com.github.lunasis.domain.chat.entity.ChatRoom;
 import com.github.lunasis.domain.chat.exception.ChatsExceptions;
 import com.github.lunasis.domain.chat.repository.ChatRoomRepository;
 import com.github.lunasis.domain.user.entity.User;
+import com.github.lunasis.domain.user.exception.UserExceptions;
+import com.github.lunasis.domain.user.repository.UserRepository;
+import com.github.lunasis.global.exception.ApiException;
 import jakarta.transaction.Transactional;
+import java.time.Duration;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 @PreAuthorize("isAuthenticated()")
 public class ChatService {
 
     @Value("${fastapi.url}")
     private String fastapiUrl;
-    private WebClient webClient;
+    private final WebClient webClient;
     private final ChatRoomRepository chatRoomRepository;
+    private final UserRepository userRepository;
 
     @Transactional
-    public StartChatResponse startChat(User user, QuestionRequest questionRequest) {
+    public StartChatResponse startChat(UUID userId, QuestionRequest questionRequest) {
+
+        User user = userRepository.findById(userId).orElseThrow(UserExceptions.USER_NOT_FOUND::toException);
 
         ChatRoom chatRoom = chatRoomRepository.save(ChatRoom.builder()
                 .user(user)
                 .privateChat(user.getPrivateChat())
                 .build());
 
-        //TODO: llm에 전달 해주기
-        String answer = "test answer";
-        String title = "test title";
-        chatRoom.updateTitle(title);
+        LlmStartChatResponse response = sendFirstChat(
+                LlmChatRequest.of(user, chatRoom.getId(), questionRequest.question()));
+        chatRoom.updateTitle(response.title());
 
         Chat chat = Chat.builder()
                 .chatRoom(chatRoom)
                 .question(questionRequest.question())
-                .answer(answer)
+                .answer(response.answer())
+                .questionEmbedding(response.embedding())
                 .build();
 
         chatRoom.getChats().add(chat);
@@ -53,16 +65,27 @@ public class ChatService {
 
         return StartChatResponse.builder()
                 .chatRoomId(chatRoom.getId())
-                .title(title)
-                .answer(answer)
+                .title(response.title())
+                .answer(response.answer())
                 .build();
     }
 
-//    private LlmChatResponse SendFirstChat(UUID chatRoomId) {
-//        webClient.post()
-//                .uri(fastapiUrl+"/api/chat/{chatRoomId}",chatRoomId)
-//                .contentType(MediaType.APPLICATION_JSON);
-//    }
+    private LlmStartChatResponse sendFirstChat(LlmChatRequest llmChatRequest) {
+        try {
+            return webClient.post()
+                    .uri(fastapiUrl + "/api/chat/{chatRoomId}/start", llmChatRequest.chatRoomId())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(llmChatRequest)
+                    .retrieve()
+                    .bodyToMono(LlmStartChatResponse.class)
+                    .timeout(Duration.ofSeconds(30))
+                    .block();
+
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new ApiException(e.getMessage(), 500);
+        }
+    }
 
     @Transactional
     public ChatResponse chat(User user, UUID chatRoomId, QuestionRequest questionRequest) {

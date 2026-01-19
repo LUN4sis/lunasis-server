@@ -1,6 +1,5 @@
 package com.github.lunasis.domain.user.entity;
 
-import com.github.lunasis.domain.chat.dto.request.LlmChatRequest.Level;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -50,5 +49,9 @@ public class ChatSetting {
         this.enthusiastic = enthusiastic;
         this.formal = formal;
         this.personalSetting = personalSetting;
+    }
+
+    public enum Level {
+        HIGH, DEFAULT, LESS
     }
 }
