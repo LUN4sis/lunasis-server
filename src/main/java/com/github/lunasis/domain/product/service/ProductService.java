@@ -23,7 +23,7 @@ public class ProductService {
 
     public List<ProductListResponse> getProductList(ProductCategory category) {
 
-        return productRepository.findAllByCategory(category).stream().map(ProductListResponse::from).toList();
+        return productRepository.findAllByCategoryOrderByAverageRatingDesc(category).stream().map(ProductListResponse::from).toList();
 
     }
 
