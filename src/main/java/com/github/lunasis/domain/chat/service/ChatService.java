@@ -7,7 +7,7 @@ import com.github.lunasis.domain.chat.dto.request.QuestionRequest;
 import com.github.lunasis.domain.chat.dto.response.ChatHistoryResponse;
 import com.github.lunasis.domain.chat.dto.response.ChatListResponse;
 import com.github.lunasis.domain.chat.dto.response.ChatResponse;
-import com.github.lunasis.domain.chat.dto.response.LlmStartChatResponse;
+import com.github.lunasis.domain.chat.dto.response.LlmChatResponse;
 import com.github.lunasis.domain.chat.dto.response.StartChatResponse;
 import com.github.lunasis.domain.chat.entity.Chat;
 import com.github.lunasis.domain.chat.entity.ChatRoom;
@@ -51,7 +51,7 @@ public class ChatService {
                 .privateChat(user.getPrivateChat())
                 .build());
 
-        LlmStartChatResponse response = sendFirstChat(
+        LlmChatResponse response = sendFirstChat(
                 LlmChatRequest.of(user, chatRoom.getId(), questionRequest.question()));
         chatRoom.updateTitle(response.title());
 
@@ -72,14 +72,14 @@ public class ChatService {
                 .build();
     }
 
-    private LlmStartChatResponse sendFirstChat(LlmChatRequest llmChatRequest) {
+    private LlmChatResponse sendFirstChat(LlmChatRequest llmChatRequest) {
         try {
             return webClient.post()
                     .uri(fastapiUrl + "/api/chat/{chatRoomId}/start", llmChatRequest.chatRoomId())
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValue(llmChatRequest)
                     .retrieve()
-                    .bodyToMono(LlmStartChatResponse.class)
+                    .bodyToMono(LlmChatResponse.class)
                     .timeout(Duration.ofSeconds(30))
                     .block();
 
