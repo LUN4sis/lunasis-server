@@ -1,5 +1,6 @@
 package com.github.lunasis.domain.chat.controller;
 
+import com.github.lunasis.domain.chat.dto.request.GuestQuestionRequest;
 import com.github.lunasis.domain.chat.dto.request.QuestionRequest;
 import com.github.lunasis.domain.chat.dto.request.UpdateTitleRequest;
 import com.github.lunasis.domain.chat.dto.response.ChatHistoryResponse;
@@ -49,10 +50,10 @@ public class ChatController {
     }
 
     @PostMapping("/anonymous")
-    @Operation(summary = "익명 채팅 보내기 api")
-    public ApiResponse<ChatResponse> anonymousChar(@Valid @RequestBody QuestionRequest questionRequest) {
+    @Operation(summary = "익명/비 로그인자 채팅 보내기 api")
+    public ApiResponse<ChatResponse> anonymousChar(@Valid @RequestBody GuestQuestionRequest request) {
 
-        return ApiResponse.ok(chatService.anonymousChat(questionRequest));
+        return ApiResponse.ok(chatService.anonymousChat(request));
     }
 
     @GetMapping

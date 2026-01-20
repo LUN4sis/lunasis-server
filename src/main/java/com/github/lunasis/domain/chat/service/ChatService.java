@@ -1,6 +1,8 @@
 package com.github.lunasis.domain.chat.service;
 
+import com.github.lunasis.domain.chat.dto.request.GuestQuestionRequest;
 import com.github.lunasis.domain.chat.dto.request.LlmChatRequest;
+import com.github.lunasis.domain.chat.dto.request.LlmGuestChatRequest;
 import com.github.lunasis.domain.chat.dto.request.QuestionRequest;
 import com.github.lunasis.domain.chat.dto.response.ChatHistoryResponse;
 import com.github.lunasis.domain.chat.dto.response.ChatListResponse;
@@ -135,15 +137,26 @@ public class ChatService {
         return user.getId().equals(chatRoom.getUser().getId());
     }
 
-    public ChatResponse anonymousChat(QuestionRequest questionRequest) {
+    public ChatResponse anonymousChat(GuestQuestionRequest request) {
 
-        //TODO: llm에 질문 전달
+        return anonymousLlmChat(request);
+    }
 
-        String answer = "test answer";
+    private ChatResponse anonymousLlmChat(GuestQuestionRequest request) {
+        try {
+            return webClient.post()
+                    .uri(fastapiUrl + "/api/chat/{chatRoomId}/anonymous", request.anonymousId())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(LlmGuestChatRequest.from(request))
+                    .retrieve()
+                    .bodyToMono(ChatResponse.class)
+                    .timeout(Duration.ofSeconds(30))
+                    .block();
 
-        return ChatResponse.builder()
-                .answer(answer)
-                .build();
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new ApiException(e.getMessage(), 500);
+        }
     }
 
     public List<ChatListResponse> getChatRooms(User user) {
