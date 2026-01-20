@@ -55,15 +55,7 @@ public class ChatService {
                 LlmChatRequest.of(user, chatRoom.getId(), questionRequest.question()));
         chatRoom.updateTitle(response.title());
 
-        Chat chat = Chat.builder()
-                .chatRoom(chatRoom)
-                .question(questionRequest.question())
-                .answer(response.answer())
-                .questionEmbedding(response.embedding())
-                .build();
-
-        chatRoom.getChats().add(chat);
-        chatRoomRepository.save(chatRoom);
+        saveChatToRoom(chatRoom, questionRequest.question(), response);
 
         return StartChatResponse.builder()
                 .chatRoomId(chatRoom.getId())
@@ -99,26 +91,47 @@ public class ChatService {
             throw ChatsExceptions.USER_NOT_ALLOWED.toException();
         }
 
-        //Todo: llm에 질문 전달
+        LlmChatResponse response = sendChat(
+                LlmChatRequest.of(user, chatRoom.getId(), questionRequest.question()));
 
-        String answer = "test answer";
+        saveChatToRoom(chatRoom, questionRequest.question(), response);
 
+        return ChatResponse.builder()
+                .answer(response.answer())
+                .build();
+    }
+
+    private LlmChatResponse sendChat(LlmChatRequest llmChatRequest) {
+        try {
+            return webClient.post()
+                    .uri(fastapiUrl + "/api/chat/{chatRoomId}", llmChatRequest.chatRoomId())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(llmChatRequest)
+                    .retrieve()
+                    .bodyToMono(LlmChatResponse.class)
+                    .timeout(Duration.ofSeconds(30))
+                    .block();
+
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new ApiException(e.getMessage(), 500);
+        }
+    }
+
+    private void saveChatToRoom(ChatRoom chatRoom, String question, LlmChatResponse response) {
         Chat chat = Chat.builder()
                 .chatRoom(chatRoom)
-                .question(questionRequest.question())
-                .answer(answer)
+                .question(question)
+                .answer(response.answer())
+                .questionEmbedding(response.embedding())
                 .build();
 
         chatRoom.getChats().add(chat);
         chatRoomRepository.save(chatRoom);
-
-        return ChatResponse.builder()
-                .answer(answer)
-                .build();
     }
 
     @Transactional
-    public void updateTitle(User user, UUID chatRoomId, String title) {
+    public void updateChatRoomTitle(User user, UUID chatRoomId, String title) {
 
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(ChatsExceptions.CHATROOM_NOT_FOUND::toException);
