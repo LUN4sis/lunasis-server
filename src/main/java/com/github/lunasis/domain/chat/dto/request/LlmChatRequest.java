@@ -1,5 +1,7 @@
 package com.github.lunasis.domain.chat.dto.request;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.github.lunasis.domain.product.entity.ProductCategory;
 import com.github.lunasis.domain.user.entity.ChatSetting;
 import com.github.lunasis.domain.user.entity.ChatSetting.Level;
@@ -9,12 +11,14 @@ import java.util.UUID;
 import lombok.Builder;
 
 @Builder
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record LlmChatRequest(
         UUID userId,
         UUID chatRoomId,
         String question,
         PreferenceRequest preference
 ) {
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     public record PreferenceRequest(
             Level warmth,
             Level enthusiastic,
