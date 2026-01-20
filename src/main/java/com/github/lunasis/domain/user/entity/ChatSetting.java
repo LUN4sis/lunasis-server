@@ -1,5 +1,6 @@
 package com.github.lunasis.domain.user.entity;
 
+import com.github.lunasis.domain.user.dto.request.UpdateChatSetting;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -45,11 +46,11 @@ public class ChatSetting {
     @Column(name = "personal_setting", length = 1000)
     private String personalSetting;
 
-    public void update(Level warmth, Level enthusiastic, Level formal, String personalSetting) {
-        this.warmth = warmth;
-        this.enthusiastic = enthusiastic;
-        this.formal = formal;
-        this.personalSetting = personalSetting;
+    public void update(UpdateChatSetting updateChatSetting) {
+        this.warmth = updateChatSetting.warmth();
+        this.enthusiastic = updateChatSetting.enthusiastic();
+        this.formal = updateChatSetting.formal();
+        this.personalSetting = updateChatSetting.personalSetting();
     }
 
     public enum Level {

@@ -1,6 +1,7 @@
 package com.github.lunasis.domain.user.controller;
 
 import com.github.lunasis.domain.user.dto.request.CheckNickname;
+import com.github.lunasis.domain.user.dto.request.UpdateChatSetting;
 import com.github.lunasis.domain.user.dto.request.UpdatePreference;
 import com.github.lunasis.domain.user.dto.request.UpdateUserInfo;
 import com.github.lunasis.domain.user.dto.response.SimpleUserInfo;
@@ -49,6 +50,15 @@ public class UserController {
         } else {
             return ApiResponse.error("중복된 닉네임이 있습니다", 404);
         }
+    }
+
+    @PostMapping("/setting")
+    @Operation(summary = "채팅 개인 설정")
+    public ApiResponse<Void> updateChatSetting(@AuthenticationPrincipal User user,
+                                               @Valid @RequestBody UpdateChatSetting updateChatSetting) {
+
+        userService.updateChatSetting(user.getId(), updateChatSetting);
+        return ApiResponse.ok();
     }
 
 }

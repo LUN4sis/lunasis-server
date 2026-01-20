@@ -1,11 +1,13 @@
 package com.github.lunasis.domain.user.service;
 
+import com.github.lunasis.domain.user.dto.request.UpdateChatSetting;
 import com.github.lunasis.domain.user.dto.request.UpdatePreference;
 import com.github.lunasis.domain.user.dto.request.UpdateUserInfo;
 import com.github.lunasis.domain.user.dto.response.SimpleUserInfo;
 import com.github.lunasis.domain.user.entity.User;
 import com.github.lunasis.domain.user.exception.UserExceptions;
 import com.github.lunasis.domain.user.repository.UserRepository;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -43,6 +45,16 @@ public class UserService {
         currentUser.updateFirstLogin();
         currentUser.getPreference().updateUserPreference(updatePreference);
         userRepository.save(currentUser);
+    }
+
+    @Transactional
+    public void updateChatSetting(UUID userId, UpdateChatSetting updateChatSetting) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(UserExceptions.USER_NOT_FOUND::toException);
+
+        user.getChatSetting().update(updateChatSetting);
+        userRepository.save(user);
     }
 
 
