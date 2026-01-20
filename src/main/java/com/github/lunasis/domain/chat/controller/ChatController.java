@@ -79,7 +79,7 @@ public class ChatController {
     public void updateTitle(@AuthenticationPrincipal User user, @PathVariable UUID chatRoomId,
                             @RequestBody UpdateTitleRequest request) {
 
-        chatService.updateTitle(user, chatRoomId, request.title());
+        chatService.updateChatRoomTitle(user, chatRoomId, request.title());
     }
 
 }
