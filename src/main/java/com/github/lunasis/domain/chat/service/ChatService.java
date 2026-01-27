@@ -16,6 +16,7 @@ import com.github.lunasis.domain.chat.repository.ChatRoomRepository;
 import com.github.lunasis.domain.user.entity.User;
 import com.github.lunasis.domain.user.exception.UserExceptions;
 import com.github.lunasis.domain.user.repository.UserRepository;
+import com.github.lunasis.domain.user.service.SavedMemoryService;
 import com.github.lunasis.global.exception.ApiException;
 import java.time.Duration;
 import java.util.List;
@@ -40,6 +41,7 @@ public class ChatService {
     private final WebClient webClient;
     private final ChatRoomRepository chatRoomRepository;
     private final UserRepository userRepository;
+    private final SavedMemoryService savedMemoryService;
 
     @Transactional
     public StartChatResponse startChat(UUID userId, QuestionRequest questionRequest) {
@@ -51,8 +53,10 @@ public class ChatService {
                 .privateChat(user.getPrivateChat())
                 .build());
 
+        List<String> savedMemorySummaries = savedMemoryService.getSavedMemorySummaries(userId);
+
         LlmChatResponse response = sendFirstChat(
-                LlmChatRequest.of(user, chatRoom.getId(), questionRequest.question()));
+                LlmChatRequest.of(user, chatRoom, questionRequest.question(), savedMemorySummaries));
         chatRoom.updateTitle(response.title());
 
         saveChatToRoom(chatRoom, questionRequest.question(), response);
@@ -91,8 +95,10 @@ public class ChatService {
             throw ChatsExceptions.USER_NOT_ALLOWED.toException();
         }
 
+        List<String> savedMemorySummaries = savedMemoryService.getSavedMemorySummaries(user.getId());
+
         LlmChatResponse response = sendChat(
-                LlmChatRequest.of(user, chatRoom.getId(), questionRequest.question()));
+                LlmChatRequest.of(user, chatRoom, questionRequest.question(), savedMemorySummaries));
 
         saveChatToRoom(chatRoom, questionRequest.question(), response);
 

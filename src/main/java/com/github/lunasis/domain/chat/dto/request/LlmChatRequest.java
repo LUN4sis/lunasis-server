@@ -2,10 +2,12 @@ package com.github.lunasis.domain.chat.dto.request;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.github.lunasis.domain.chat.entity.ChatRoom;
 import com.github.lunasis.domain.product.entity.ProductCategory;
 import com.github.lunasis.domain.user.entity.ChatSetting;
 import com.github.lunasis.domain.user.entity.ChatSetting.Level;
 import com.github.lunasis.domain.user.entity.User;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import lombok.Builder;
@@ -16,6 +18,9 @@ public record LlmChatRequest(
         UUID userId,
         UUID chatRoomId,
         String question,
+        String sessionSummary,
+        List<String> savedMemory,
+        Boolean isFull,
         PreferenceRequest preference
 ) {
     @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
@@ -31,14 +36,17 @@ public record LlmChatRequest(
     }
 
 
-    public static LlmChatRequest of(User user, UUID chatRoomId, String question) {
+    public static LlmChatRequest of(User user, ChatRoom chatRoom, String question, List<String> savedMemory) {
 
         ChatSetting chatSetting = user.getChatSetting();
 
         return LlmChatRequest.builder()
                 .userId(user.getId())
-                .chatRoomId(chatRoomId)
+                .chatRoomId(chatRoom.getId())
                 .question(question)
+                .sessionSummary(chatRoom.getSessionMemory())
+                .savedMemory(savedMemory)
+                .isFull(savedMemory.size() >= 10)
                 .preference(new PreferenceRequest(
                         chatSetting.getWarmth(),
                         chatSetting.getEnthusiastic(),

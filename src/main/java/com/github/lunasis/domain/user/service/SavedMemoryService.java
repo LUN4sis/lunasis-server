@@ -64,6 +64,13 @@ public class SavedMemoryService {
                 .map(SavedMemoryResponse::from).toList();
     }
 
+    public List<String> getSavedMemorySummaries(UUID userId) {
+
+        return savedMemoryRepository.findAllByUserId(userId).stream()
+                .map(SavedMemory::getSummary)
+                .toList();
+    }
+
     @Transactional
     public void deleteSavedMemory(UUID savedMemoryId) {
 
