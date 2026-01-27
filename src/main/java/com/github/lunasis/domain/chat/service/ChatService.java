@@ -123,7 +123,6 @@ public class ChatService {
                 .chatRoom(chatRoom)
                 .question(question)
                 .answer(response.answer())
-                .questionEmbedding(response.embedding())
                 .build();
 
         chatRoom.getChats().add(chat);
