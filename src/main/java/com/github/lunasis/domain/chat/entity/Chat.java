@@ -41,10 +41,10 @@ public class Chat {
     @JoinColumn(name = "chatRoom_id")
     private ChatRoom chatRoom;
 
-    @Column(name = "question")
+    @Column(name = "question", columnDefinition = "TEXT")
     private String question;
 
-    @Column(name = "answer")
+    @Column(name = "answer", columnDefinition = "TEXT")
     private String answer;
 
     @Column(name = "image")
