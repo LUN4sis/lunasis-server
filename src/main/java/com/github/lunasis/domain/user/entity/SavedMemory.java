@@ -12,9 +12,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Array;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "saved_momery")
@@ -34,9 +31,5 @@ public class SavedMemory {
     @Column(columnDefinition = "TEXT")
     private String summary;
 
-    @Column(name = "summary_embedding")
-    @JdbcTypeCode(SqlTypes.VECTOR)
-    @Array(length = 1536)
-    private float[] embedding;
 
 }

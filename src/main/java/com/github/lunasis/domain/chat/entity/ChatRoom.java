@@ -22,6 +22,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Array;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -56,7 +59,20 @@ public class ChatRoom {
     @Column(name = "private_chat", nullable = false, updatable = false)
     private boolean privateChat;
 
+    @Column(name = "session_memory")
+    private String sessionMemory;
+
+    @Column(name = "summary_embedding")
+    @JdbcTypeCode(SqlTypes.VECTOR)
+    @Array(length = 1536)
+    private float[] embedding;
+
     public void updateTitle(String title) {
         this.title = title;
+    }
+
+    public void saveSession(String sessionMemory, float[] embedding) {
+        this.sessionMemory = sessionMemory;
+        this.embedding = embedding;
     }
 }

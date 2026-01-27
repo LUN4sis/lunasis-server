@@ -78,7 +78,7 @@ public class UserController {
     @Operation(summary = "저장 메모리 저장")
     public ApiResponse<Void> saveSummaryMemory(@Valid @RequestBody SaveMemory saveMemory) {
 
-        savedMemoryService.saveSummaryMemory(saveMemory);
+        savedMemoryService.saveMemories(saveMemory);
         return ApiResponse.ok();
     }
 
