@@ -59,7 +59,7 @@ public class ChatRoom {
     @Column(name = "private_chat", nullable = false, updatable = false)
     private boolean privateChat;
 
-    @Column(name = "session_memory")
+    @Column(name = "session_memory", columnDefinition = "TEXT")
     private String sessionMemory;
 
     @Column(name = "summary_embedding")
