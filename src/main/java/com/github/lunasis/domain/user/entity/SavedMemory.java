@@ -14,7 +14,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "saved_momery")
+@Table(name = "saved_memory")
 @Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
