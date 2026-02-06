@@ -92,20 +92,26 @@ public class AuthService {
     }
 
     private String getAccessToken(String loginCode) {
-        Map<String, Object> response = webClient.post()
-                .uri("https://oauth2.googleapis.com/token")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .body(BodyInserters.fromFormData("grant_type", "authorization_code")
-                        .with("code", loginCode)
-                        .with("client_id", googleProperty.getClientId())
-                        .with("client_secret", googleProperty.getClientSecret())
-                        .with("redirect_uri", googleProperty.getRedirectUri()))
-                .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {
-                })
-                .block();
+        try {
+            Map<String, Object> response = webClient.post()
+                    .uri("https://oauth2.googleapis.com/token")
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                    .body(BodyInserters.fromFormData("grant_type", "authorization_code")
+                            .with("code", loginCode)
+                            .with("client_id", googleProperty.getClientId())
+                            .with("client_secret", googleProperty.getClientSecret())
+                            .with("redirect_uri", googleProperty.getRedirectUri()))
+                    .retrieve()
+                    .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {
+                    })
+                    .block();
 
-        return (String) Objects.requireNonNull(response).get("access_token");
+            return (String) Objects.requireNonNull(response).get("access_token");
+        } catch (Exception e) {
+            log.error("[getAccessToken] 실패", e);  // 이 부분 중요!
+            throw e;
+        }
+
 
     }
 
