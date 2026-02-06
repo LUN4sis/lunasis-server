@@ -55,8 +55,9 @@ public class ChatService {
 
         List<String> savedMemorySummaries = savedMemoryService.getSavedMemorySummaries(userId);
 
-        LlmChatResponse response = sendFirstChat(
-                LlmChatRequest.of(user, chatRoom, questionRequest.question(), savedMemorySummaries));
+//        LlmChatResponse response = sendFirstChat(
+//                LlmChatRequest.of(user, chatRoom, questionRequest.question(), savedMemorySummaries));
+        LlmChatResponse response = new LlmChatResponse("first answer", "first title");
         chatRoom.updateTitle(response.title());
 
         saveChatToRoom(chatRoom, questionRequest.question(), response);
@@ -97,8 +98,10 @@ public class ChatService {
 
         List<String> savedMemorySummaries = savedMemoryService.getSavedMemorySummaries(user.getId());
 
-        LlmChatResponse response = sendChat(
-                LlmChatRequest.of(user, chatRoom, questionRequest.question(), savedMemorySummaries));
+//        LlmChatResponse response = sendChat(
+//                LlmChatRequest.of(user, chatRoom, questionRequest.question(), savedMemorySummaries));
+
+        LlmChatResponse response = new LlmChatResponse("second answer", null);
 
         saveChatToRoom(chatRoom, questionRequest.question(), response);
 
