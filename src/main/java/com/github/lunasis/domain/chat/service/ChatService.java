@@ -55,7 +55,7 @@ public class ChatService {
 
         List<String> savedMemorySummaries = savedMemoryService.getSavedMemorySummaries(userId);
 
-        LlmChatResponse response = sendFirstChat(
+        LlmChatResponse response = sendChat(
                 LlmChatRequest.of(user, chatRoom, questionRequest.question(), savedMemorySummaries));
         chatRoom.updateTitle(response.title());
 
@@ -68,22 +68,6 @@ public class ChatService {
                 .build();
     }
 
-    private LlmChatResponse sendFirstChat(LlmChatRequest llmChatRequest) {
-        try {
-            return webClient.post()
-                    .uri(fastapiUrl + "/api/chat/{chatRoomId}/start", llmChatRequest.chatRoomId())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(llmChatRequest)
-                    .retrieve()
-                    .bodyToMono(LlmChatResponse.class)
-                    .timeout(Duration.ofSeconds(30))
-                    .block();
-
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            throw new ApiException(e.getMessage(), 500);
-        }
-    }
 
     @Transactional
     public ChatResponse chat(User user, UUID chatRoomId, QuestionRequest questionRequest) {
@@ -110,12 +94,12 @@ public class ChatService {
     private LlmChatResponse sendChat(LlmChatRequest llmChatRequest) {
         try {
             return webClient.post()
-                    .uri(fastapiUrl + "/api/chat/{chatRoomId}", llmChatRequest.chatRoomId())
+                    .uri(fastapiUrl + "/ai/chat")
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValue(llmChatRequest)
                     .retrieve()
                     .bodyToMono(LlmChatResponse.class)
-                    .timeout(Duration.ofSeconds(30))
+                    .timeout(Duration.ofSeconds(60))
                     .block();
 
         } catch (Exception e) {
