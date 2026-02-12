@@ -46,7 +46,7 @@ public class ChatService {
     private final SavedMemoryService savedMemoryService;
 
     @Transactional
-    public StartChatResponse startChat(UUID userId, QuestionRequest questionRequest) {
+    public StartChatResponse startChat(UUID userId, QuestionRequest questionRequest) throws JsonProcessingException {
 
         User user = userRepository.findById(userId).orElseThrow(UserExceptions.USER_NOT_FOUND::toException);
 
@@ -72,7 +72,8 @@ public class ChatService {
 
 
     @Transactional
-    public ChatResponse chat(User user, UUID chatRoomId, QuestionRequest questionRequest) {
+    public ChatResponse chat(User user, UUID chatRoomId, QuestionRequest questionRequest)
+            throws JsonProcessingException {
 
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(ChatsExceptions.CHATROOM_NOT_FOUND::toException);

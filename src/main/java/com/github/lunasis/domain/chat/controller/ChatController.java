@@ -1,5 +1,6 @@
 package com.github.lunasis.domain.chat.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.lunasis.domain.chat.dto.request.GuestQuestionRequest;
 import com.github.lunasis.domain.chat.dto.request.QuestionRequest;
 import com.github.lunasis.domain.chat.dto.request.UpdateTitleRequest;
@@ -35,7 +36,8 @@ public class ChatController {
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "채팅 시작 api")
     public ApiResponse<StartChatResponse> startChat(@AuthenticationPrincipal User user,
-                                                    @Valid @RequestBody QuestionRequest questionRequest) {
+                                                    @Valid @RequestBody QuestionRequest questionRequest)
+            throws JsonProcessingException {
 
         return ApiResponse.ok(chatService.startChat(user.getId(), questionRequest));
     }
@@ -44,7 +46,8 @@ public class ChatController {
     @PreAuthorize("isAuthenticated()")
     @Operation(summary = "채팅 보내기 api")
     public ApiResponse<ChatResponse> chat(@AuthenticationPrincipal User user, @PathVariable UUID chatRoomId,
-                                          @Valid @RequestBody QuestionRequest questionRequest) {
+                                          @Valid @RequestBody QuestionRequest questionRequest)
+            throws JsonProcessingException {
 
         return ApiResponse.ok(chatService.chat(user, chatRoomId, questionRequest));
     }
