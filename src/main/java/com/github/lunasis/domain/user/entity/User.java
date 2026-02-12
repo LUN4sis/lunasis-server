@@ -17,6 +17,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import java.util.HashSet;
 import java.util.List;
@@ -76,7 +77,15 @@ public class User {
     List<ChatRoom> chatRooms;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private Preference preference;
+    @Builder.Default
+    private Preference preference = new Preference();
+
+    @PrePersist
+    public void prePersist() {
+        if (preference != null) {
+            preference.assignUser(this);
+        }
+    }
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Post> posts;

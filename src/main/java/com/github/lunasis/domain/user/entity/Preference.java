@@ -69,4 +69,8 @@ public class Preference {
         this.productCategories = updatePreference.categories();
         this.priceComparison = updatePreference.priceComparison();
     }
+
+    public void assignUser(User user) {
+        this.user = user;
+    }
 }
