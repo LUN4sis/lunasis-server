@@ -1,5 +1,7 @@
 package com.github.lunasis.domain.chat.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.lunasis.domain.chat.dto.request.GuestQuestionRequest;
 import com.github.lunasis.domain.chat.dto.request.LlmChatRequest;
 import com.github.lunasis.domain.chat.dto.request.LlmGuestChatRequest;
@@ -91,12 +93,14 @@ public class ChatService {
                 .build();
     }
 
-    private LlmChatResponse sendChat(LlmChatRequest llmChatRequest) {
+    private LlmChatResponse sendChat(LlmChatRequest llmChatRequest) throws JsonProcessingException {
         String requestUrl = fastapiUrl + "/ai/chat";
         log.info("[FastAPI 요청 시작] URL: {}", requestUrl);
         log.debug("[FastAPI 요청 데이터] userId: {}, chatRoomId: {}, questionLength: {}",
                 llmChatRequest.userId(), llmChatRequest.chatRoomId(),
                 llmChatRequest.question() != null ? llmChatRequest.question().length() : 0);
+        ObjectMapper mapper = new ObjectMapper();
+        log.info("요청 JSON: {}", mapper.writeValueAsString(llmChatRequest));
 
         try {
             LlmChatResponse response = webClient.post()
