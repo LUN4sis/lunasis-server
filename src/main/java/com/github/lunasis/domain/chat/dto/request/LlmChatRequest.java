@@ -5,6 +5,7 @@ import com.github.lunasis.domain.product.entity.ProductCategory;
 import com.github.lunasis.domain.user.entity.ChatSetting;
 import com.github.lunasis.domain.user.entity.ChatSetting.Level;
 import com.github.lunasis.domain.user.entity.User;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -47,7 +48,7 @@ public record LlmChatRequest(
                         chatSetting.getWarmth(),
                         chatSetting.getEnthusiastic(),
                         chatSetting.getFormal(),
-                        user.getPreference().getProductCategories(),
+                        new HashSet<>(user.getPreference().getProductCategories()),
                         chatSetting.getPersonalSetting(),
                         user.getNickname(),
                         user.getAge()
