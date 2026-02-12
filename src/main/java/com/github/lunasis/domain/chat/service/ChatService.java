@@ -72,8 +72,10 @@ public class ChatService {
 
 
     @Transactional
-    public ChatResponse chat(User user, UUID chatRoomId, QuestionRequest questionRequest)
+    public ChatResponse chat(UUID userId, UUID chatRoomId, QuestionRequest questionRequest)
             throws JsonProcessingException {
+
+        User user = userRepository.findById(userId).orElseThrow(UserExceptions.USER_NOT_FOUND::toException);
 
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(ChatsExceptions.CHATROOM_NOT_FOUND::toException);
