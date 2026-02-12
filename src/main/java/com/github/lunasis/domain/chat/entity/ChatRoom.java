@@ -64,7 +64,7 @@ public class ChatRoom {
 
     @Column(name = "summary_embedding")
     @JdbcTypeCode(SqlTypes.VECTOR)
-    @Array(length = 1536)
+    @Array(length = 1024)
     private float[] embedding;
 
     public void updateTitle(String title) {
