@@ -92,9 +92,15 @@ public class ChatService {
     }
 
     private LlmChatResponse sendChat(LlmChatRequest llmChatRequest) {
+        String requestUrl = fastapiUrl + "/ai/chat";
+        log.info("[FastAPI 요청 시작] URL: {}", requestUrl);
+        log.debug("[FastAPI 요청 데이터] userId: {}, chatRoomId: {}, questionLength: {}",
+                llmChatRequest.userId(), llmChatRequest.chatRoomId(),
+                llmChatRequest.question() != null ? llmChatRequest.question().length() : 0);
+
         try {
-            return webClient.post()
-                    .uri(fastapiUrl + "/ai/chat")
+            LlmChatResponse response = webClient.post()
+                    .uri(requestUrl)
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValue(llmChatRequest)
                     .retrieve()
@@ -102,9 +108,16 @@ public class ChatService {
                     .timeout(Duration.ofSeconds(60))
                     .block();
 
+            log.info("[FastAPI 응답 성공] URL: {}, hasTitle: {}, answerLength: {}",
+                    requestUrl, response != null && response.title() != null,
+                    response != null && response.answer() != null ? response.answer().length() : 0);
+            return response;
+
         } catch (Exception e) {
-            log.error(e.getMessage());
-            throw new ApiException(e.getMessage(), 500);
+            log.error("[FastAPI 요청 실패] URL: {}, 에러 타입: {}, 에러 메시지: {}",
+                    requestUrl, e.getClass().getName(), e.getMessage());
+            log.error("[FastAPI 요청 실패] 상세 스택 트레이스: ", e);
+            throw new ApiException("FastAPI 채팅 요청 실패: " + e.getMessage(), 500);
         }
     }
 
@@ -145,8 +158,13 @@ public class ChatService {
     }
 
     private ChatResponse anonymousLlmChat(GuestQuestionRequest request) {
+        String requestUrl = fastapiUrl + "/api/chat/" + request.anonymousId() + "/anonymous";
+        log.info("[FastAPI 익명 채팅 요청 시작] URL: {}, anonymousId: {}", requestUrl, request.anonymousId());
+        log.debug("[FastAPI 익명 채팅 요청 데이터] questionLength: {}",
+                request.question() != null ? request.question().length() : 0);
+
         try {
-            return webClient.post()
+            ChatResponse response = webClient.post()
                     .uri(fastapiUrl + "/api/chat/{chatRoomId}/anonymous", request.anonymousId())
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValue(LlmGuestChatRequest.from(request))
@@ -155,9 +173,15 @@ public class ChatService {
                     .timeout(Duration.ofSeconds(30))
                     .block();
 
+            log.info("[FastAPI 익명 채팅 응답 성공] URL: {}, answerLength: {}",
+                    requestUrl, response != null && response.answer() != null ? response.answer().length() : 0);
+            return response;
+
         } catch (Exception e) {
-            log.error(e.getMessage());
-            throw new ApiException(e.getMessage(), 500);
+            log.error("[FastAPI 익명 채팅 요청 실패] URL: {}, anonymousId: {}, 에러 타입: {}, 에러 메시지: {}",
+                    requestUrl, request.anonymousId(), e.getClass().getName(), e.getMessage());
+            log.error("[FastAPI 익명 채팅 요청 실패] 상세 스택 트레이스: ", e);
+            throw new ApiException("FastAPI 익명 채팅 요청 실패: " + e.getMessage(), 500);
         }
     }
 
