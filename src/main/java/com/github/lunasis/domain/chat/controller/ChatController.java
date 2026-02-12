@@ -49,7 +49,7 @@ public class ChatController {
                                           @Valid @RequestBody QuestionRequest questionRequest)
             throws JsonProcessingException {
 
-        return ApiResponse.ok(chatService.chat(user, chatRoomId, questionRequest));
+        return ApiResponse.ok(chatService.chat(user.getId(), chatRoomId, questionRequest));
     }
 
     @PostMapping("/anonymous")
