@@ -57,5 +57,10 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public User getUserById(UUID userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(UserExceptions.USER_NOT_FOUND::toException);
+    }
+
 
 }
