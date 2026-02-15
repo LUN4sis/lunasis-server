@@ -39,8 +39,7 @@ public class UserService {
     @Transactional
     public void updatePreference(User user, UpdatePreference updatePreference) {
 
-        User currentUser = userRepository.findById(user.getId())
-                .orElseThrow(UserExceptions.USER_NOT_FOUND::toException);
+        User currentUser = getUserById(user.getId());
 
         currentUser.updateFirstLogin();
         currentUser.getPreference().updateUserPreference(updatePreference);
@@ -50,8 +49,7 @@ public class UserService {
     @Transactional
     public void updateChatSetting(UUID userId, UpdateChatSetting updateChatSetting) {
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(UserExceptions.USER_NOT_FOUND::toException);
+        User user = getUserById(userId);
 
         user.getChatSetting().update(updateChatSetting);
         userRepository.save(user);

@@ -13,8 +13,7 @@ import com.github.lunasis.domain.post.entity.Post;
 import com.github.lunasis.domain.post.exception.PostExceptions;
 import com.github.lunasis.domain.post.repository.PostRepository;
 import com.github.lunasis.domain.user.entity.User;
-import com.github.lunasis.domain.user.exception.UserExceptions;
-import com.github.lunasis.domain.user.repository.UserRepository;
+import com.github.lunasis.domain.user.service.UserService;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -27,12 +26,12 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Transactional
     public CommentResponse createComment(UUID userId, UUID postId, CreateCommentRequest request) {
 
-        User user = userRepository.findById(userId).orElseThrow(UserExceptions.USER_NOT_FOUND::toException);
+        User user = userService.getUserById(userId);
         Post post = postRepository.findByIdWithComments(postId).orElseThrow(PostExceptions.POST_NOT_FOUND::toException);
 
         // 대댓글의 부모 댓글, 없으면 null

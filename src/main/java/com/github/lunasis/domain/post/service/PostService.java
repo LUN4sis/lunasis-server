@@ -10,8 +10,7 @@ import com.github.lunasis.domain.post.entity.Post;
 import com.github.lunasis.domain.post.exception.PostExceptions;
 import com.github.lunasis.domain.post.repository.PostRepository;
 import com.github.lunasis.domain.user.entity.User;
-import com.github.lunasis.domain.user.exception.UserExceptions;
-import com.github.lunasis.domain.user.repository.UserRepository;
+import com.github.lunasis.domain.user.service.UserService;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,14 +22,13 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class PostService {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final PostRepository postRepository;
 
     @Transactional
     public PostInfoResponse createPost(UUID userId, CreatePostRequest request) {
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(UserExceptions.USER_NOT_FOUND::toException);
+        User user = userService.getUserById(userId);
 
         //새 포스트 생성
         Post newPost = Post.builder()
@@ -48,8 +46,7 @@ public class PostService {
     @Transactional(readOnly = true)
     public PostInfoResponse getPost(UUID userId, UUID postId) {
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(UserExceptions.USER_NOT_FOUND::toException);
+        User user = userService.getUserById(userId);
 
         Post post = postRepository.findByIdWithUser(postId)
                 .orElseThrow(PostExceptions.POST_NOT_FOUND::toException);
@@ -106,8 +103,7 @@ public class PostService {
     @Transactional
     public void addBookmark(UUID userId, UUID postId) {
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(UserExceptions.USER_NOT_FOUND::toException);
+        User user = userService.getUserById(userId);
 
         if (!postRepository.existsById(postId)) {
             throw PostExceptions.POST_NOT_FOUND.toException();
@@ -119,8 +115,7 @@ public class PostService {
     @Transactional
     public void removeBookmark(UUID userId, UUID postId) {
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(UserExceptions.USER_NOT_FOUND::toException);
+        User user = userService.getUserById(userId);
 
         if (!user.isBookmarked(postId)) {
             throw PostExceptions.BOOKMARK_NOT_FOUND.toException();
@@ -132,8 +127,7 @@ public class PostService {
     @Transactional(readOnly = true)
     public Page<PostListResponse> getPosts(UUID userId, Category category, Pageable pageable) {
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(UserExceptions.USER_NOT_FOUND::toException);
+        User user = userService.getUserById(userId);
 
         Page<Post> posts = postRepository.findAllWithUser(category, pageable);
 
@@ -143,8 +137,7 @@ public class PostService {
     @Transactional(readOnly = true)
     public Page<PostListResponse> getSearchPosts(UUID userId, String searchTerm, Category category, Pageable pageable) {
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(UserExceptions.USER_NOT_FOUND::toException);
+        User user = userService.getUserById(userId);
 
         Page<Post> posts = postRepository.findBySearchTermAndCategory(searchTerm, category, pageable);
 

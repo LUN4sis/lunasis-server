@@ -16,9 +16,8 @@ import com.github.lunasis.domain.chat.entity.ChatRoom;
 import com.github.lunasis.domain.chat.exception.ChatsExceptions;
 import com.github.lunasis.domain.chat.repository.ChatRoomRepository;
 import com.github.lunasis.domain.user.entity.User;
-import com.github.lunasis.domain.user.exception.UserExceptions;
-import com.github.lunasis.domain.user.repository.UserRepository;
 import com.github.lunasis.domain.user.service.SavedMemoryService;
+import com.github.lunasis.domain.user.service.UserService;
 import com.github.lunasis.global.exception.ApiException;
 import java.time.Duration;
 import java.util.List;
@@ -40,13 +39,13 @@ public class ChatService {
     private String fastapiUrl;
     private final WebClient webClient;
     private final ChatRoomRepository chatRoomRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final SavedMemoryService savedMemoryService;
 
     @Transactional
     public StartChatResponse startChat(UUID userId, QuestionRequest questionRequest) throws JsonProcessingException {
 
-        User user = userRepository.findById(userId).orElseThrow(UserExceptions.USER_NOT_FOUND::toException);
+        User user = userService.getUserById(userId);
 
         ChatRoom chatRoom = chatRoomRepository.save(ChatRoom.builder()
                 .user(user)
@@ -73,7 +72,7 @@ public class ChatService {
     public ChatResponse chat(UUID userId, UUID chatRoomId, QuestionRequest questionRequest)
             throws JsonProcessingException {
 
-        User user = userRepository.findById(userId).orElseThrow(UserExceptions.USER_NOT_FOUND::toException);
+        User user = userService.getUserById(userId);
 
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(ChatsExceptions.CHATROOM_NOT_FOUND::toException);
