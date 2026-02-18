@@ -23,7 +23,7 @@ public class SavedMemoryService {
     public void saveMemories(SaveMemory memory) {
 
         saveSavedMemory(memory.userId(), memory.savedMemory());
-        saveSessionMemory(memory.chatRoomId(), memory.sessionMemory(), memory.embedding());
+        saveSessionMemory(memory.chatRoomId(), memory.sessionSummary(), memory.embedding());
     }
 
     private void saveSavedMemory(UUID userId, String savedMemory) {

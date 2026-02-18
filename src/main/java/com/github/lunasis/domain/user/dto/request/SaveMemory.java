@@ -9,7 +9,7 @@ public record SaveMemory(
         @NotNull UUID userId,
         @NotNull UUID chatRoomId,
         @Nullable String savedMemory,
-        @Nullable String sessionMemory,
+        @Nullable String sessionSummary,
         @NotNull @Size(min = 1) float[] embedding
 ) {
 }
