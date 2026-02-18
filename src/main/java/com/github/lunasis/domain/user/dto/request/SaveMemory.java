@@ -2,7 +2,6 @@ package com.github.lunasis.domain.user.dto.request;
 
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import java.util.UUID;
 
 public record SaveMemory(
@@ -10,6 +9,6 @@ public record SaveMemory(
         @NotNull UUID chatRoomId,
         @Nullable String savedMemory,
         @Nullable String sessionSummary,
-        @NotNull @Size(min = 1) float[] embedding
+        @Nullable float[] embedding
 ) {
 }
