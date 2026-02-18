@@ -189,8 +189,9 @@ public class ChatService {
         }
     }
 
-    public List<ChatListResponse> getChatRooms(User user) {
+    public List<ChatListResponse> getChatRooms(UUID userId) {
 
+        User user = userService.getUserById(userId);
         return user.getChatRooms().stream().map(ChatListResponse::from).toList();
     }
 

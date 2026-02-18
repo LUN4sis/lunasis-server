@@ -64,7 +64,7 @@ public class ChatController {
     @Operation(summary = "채팅방 목록 불러오기 api")
     public ApiResponse<List<ChatListResponse>> getChatRooms(@AuthenticationPrincipal User user) {
 
-        return ApiResponse.ok(chatService.getChatRooms(user));
+        return ApiResponse.ok(chatService.getChatRooms(user.getId()));
     }
 
     @GetMapping("/{chatRoomId}")
