@@ -1,9 +1,9 @@
 package com.github.lunasis.domain.survey.service;
 
+import com.github.lunasis.domain.survey.dto.request.SurveyRequest;
+import com.github.lunasis.domain.survey.dto.request.SurveyReviewRequest;
 import com.github.lunasis.domain.survey.entity.ProductReview;
 import com.github.lunasis.domain.survey.entity.Survey;
-import com.github.lunasis.domain.survey.entity.request.SurveyRequest;
-import com.github.lunasis.domain.survey.entity.request.SurveyReviewRequest;
 import com.github.lunasis.domain.survey.repository.SurveyRepository;
 import com.github.lunasis.domain.user.entity.User;
 import com.github.lunasis.domain.user.service.UserService;

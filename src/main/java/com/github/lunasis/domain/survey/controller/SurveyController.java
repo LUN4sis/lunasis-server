@@ -1,6 +1,6 @@
 package com.github.lunasis.domain.survey.controller;
 
-import com.github.lunasis.domain.survey.entity.request.SurveyRequest;
+import com.github.lunasis.domain.survey.dto.request.SurveyRequest;
 import com.github.lunasis.domain.survey.service.SurveyService;
 import com.github.lunasis.domain.user.entity.User;
 import com.github.lunasis.global.dto.ApiResponse;

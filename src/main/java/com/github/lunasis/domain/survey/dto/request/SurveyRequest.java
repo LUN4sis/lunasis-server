@@ -1,4 +1,4 @@
-package com.github.lunasis.domain.survey.entity.request;
+package com.github.lunasis.domain.survey.dto.request;
 
 import io.micrometer.common.lang.Nullable;
 import jakarta.validation.constraints.NotNull;
