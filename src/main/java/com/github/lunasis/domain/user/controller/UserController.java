@@ -5,6 +5,7 @@ import com.github.lunasis.domain.user.dto.request.SaveMemory;
 import com.github.lunasis.domain.user.dto.request.UpdateChatSetting;
 import com.github.lunasis.domain.user.dto.request.UpdatePreference;
 import com.github.lunasis.domain.user.dto.request.UpdateUserInfo;
+import com.github.lunasis.domain.user.dto.response.NicknameResponse;
 import com.github.lunasis.domain.user.dto.response.SavedMemoryResponse;
 import com.github.lunasis.domain.user.dto.response.SimpleUserInfo;
 import com.github.lunasis.domain.user.entity.User;
@@ -96,6 +97,13 @@ public class UserController {
 
         savedMemoryService.deleteSavedMemory(savedMemoryId);
         return ApiResponse.ok();
+    }
+
+    @GetMapping("/recommend")
+    @Operation(summary = "랜덤 닉네임 추천")
+    public ApiResponse<NicknameResponse> getRandomNickname() {
+
+        return ApiResponse.ok(userService.getRandomNickname());
     }
 
 }

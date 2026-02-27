@@ -3,9 +3,11 @@ package com.github.lunasis.domain.user.service;
 import com.github.lunasis.domain.user.dto.request.UpdateChatSetting;
 import com.github.lunasis.domain.user.dto.request.UpdatePreference;
 import com.github.lunasis.domain.user.dto.request.UpdateUserInfo;
+import com.github.lunasis.domain.user.dto.response.NicknameResponse;
 import com.github.lunasis.domain.user.dto.response.SimpleUserInfo;
 import com.github.lunasis.domain.user.entity.User;
 import com.github.lunasis.domain.user.exception.UserExceptions;
+import com.github.lunasis.domain.user.module.RandomNicknameGenerator;
 import com.github.lunasis.domain.user.repository.UserRepository;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final RandomNicknameGenerator randomNicknameGenerator;
 
     @Transactional
     public SimpleUserInfo updateUserInfo(User user, UpdateUserInfo updateUserInfo) {
@@ -58,6 +61,14 @@ public class UserService {
     public User getUserById(UUID userId) {
         return userRepository.findById(userId)
                 .orElseThrow(UserExceptions.USER_NOT_FOUND::toException);
+    }
+
+    public NicknameResponse getRandomNickname() {
+
+        String nickname = randomNicknameGenerator.generate();
+        return NicknameResponse.builder()
+                .randomNickname(nickname)
+                .build();
     }
 
 
