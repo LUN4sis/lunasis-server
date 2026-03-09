@@ -41,5 +41,7 @@ public class Survey {
     @Builder.Default
     private List<ProductReview> productReviews = new ArrayList<>();
 
-
+    public void updateMessage(String message) {
+        this.message = message;
+    }
 }

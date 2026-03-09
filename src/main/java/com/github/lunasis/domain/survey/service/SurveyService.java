@@ -3,6 +3,7 @@ package com.github.lunasis.domain.survey.service;
 import com.github.lunasis.domain.survey.dto.request.SurveyRequest;
 import com.github.lunasis.domain.survey.dto.request.SurveyReviewRequest;
 import com.github.lunasis.domain.survey.entity.ProductReview;
+import com.github.lunasis.domain.survey.entity.ProductReview.SurveyType;
 import com.github.lunasis.domain.survey.entity.Survey;
 import com.github.lunasis.domain.survey.repository.SurveyRepository;
 import com.github.lunasis.domain.user.entity.User;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,33 +21,44 @@ public class SurveyService {
     private final UserService userService;
     private final SurveyRepository surveyRepository;
 
+    @Transactional
     public void saveSurvey(UUID userId, SurveyRequest surveyRequest) {
 
         User user = userService.getUserById(userId);
 
-        Survey newSurvey = Survey.builder()
-                .user(user)
-                .message(surveyRequest.messageToCreator())
-                .build();
+        Survey survey = surveyRepository.findByUserId(userId)
+                .orElseGet(() -> Survey.builder()
+                        .user(user)
+                        .build());
 
-        addReview(newSurvey, surveyRequest.surveyReviewRequests());
+        survey.updateMessage(surveyRequest.messageToCreator());
+
+        if (surveyRequest.tamponReviews() != null && !surveyRequest.tamponReviews().isEmpty()) {
+            updateReviewsByType(survey, SurveyType.SURVEY_TAMPON, surveyRequest.tamponReviews());
+        }
+
+        if (surveyRequest.sanitaryReviews() != null && !surveyRequest.sanitaryReviews().isEmpty()) {
+            updateReviewsByType(survey, SurveyType.SURVEY_SANITARY, surveyRequest.sanitaryReviews());
+        }
+
+        surveyRepository.save(survey);
     }
 
-    private void addReview(Survey survey, List<SurveyReviewRequest> reviews) {
+    private void updateReviewsByType(Survey survey, SurveyType surveyType, List<SurveyReviewRequest> newReviews) {
 
-        reviews.forEach(review -> {
+        survey.getProductReviews().removeIf(review -> review.getSurveyType() == surveyType);
+
+        newReviews.forEach(reviewRequest -> {
             ProductReview productReview = ProductReview.builder()
                     .survey(survey)
-                    .surveyType(review.surveyType())
-                    .productName(review.productName())
-                    .reviewText(review.reviewText())
-                    .rating(review.rating())
-                    .ranking(review.ranking())
+                    .surveyType(reviewRequest.surveyType())
+                    .productName(reviewRequest.productName())
+                    .reviewText(reviewRequest.reviewText())
+                    .rating(reviewRequest.rating())
+                    .ranking(reviewRequest.ranking())
                     .build();
 
             survey.getProductReviews().add(productReview);
         });
-
-        surveyRepository.save(survey);
     }
 }
