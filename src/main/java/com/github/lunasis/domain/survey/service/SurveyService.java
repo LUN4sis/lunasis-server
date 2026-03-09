@@ -92,7 +92,11 @@ public class SurveyService {
             }
         });
 
-        return new SurveyResponse(tamponReviews, sanitaryReviews, survey.getMessage());
+        return new SurveyResponse(
+                tamponReviews.isEmpty() ? null : tamponReviews,
+                sanitaryReviews.isEmpty() ? null : sanitaryReviews,
+                survey.getMessage()
+        );
 
     }
 }
