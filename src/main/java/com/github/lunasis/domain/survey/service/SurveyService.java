@@ -2,12 +2,15 @@ package com.github.lunasis.domain.survey.service;
 
 import com.github.lunasis.domain.survey.dto.request.SurveyRequest;
 import com.github.lunasis.domain.survey.dto.request.SurveyReviewRequest;
+import com.github.lunasis.domain.survey.dto.response.SurveyResponse;
+import com.github.lunasis.domain.survey.dto.response.SurveyReviewResponse;
 import com.github.lunasis.domain.survey.entity.ProductReview;
 import com.github.lunasis.domain.survey.entity.ProductReview.SurveyType;
 import com.github.lunasis.domain.survey.entity.Survey;
 import com.github.lunasis.domain.survey.repository.SurveyRepository;
 import com.github.lunasis.domain.user.entity.User;
 import com.github.lunasis.domain.user.service.UserService;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -60,5 +63,36 @@ public class SurveyService {
 
             survey.getProductReviews().add(productReview);
         });
+    }
+
+    public SurveyResponse getSurvey(UUID userId) {
+
+        Survey survey = surveyRepository.findByUserId(userId).orElse(null);
+
+        if (survey == null) {
+            return new SurveyResponse(null, null, null);
+        }
+
+        List<SurveyReviewResponse> tamponReviews = new ArrayList<>();
+        List<SurveyReviewResponse> sanitaryReviews = new ArrayList<>();
+
+        survey.getProductReviews().forEach((review) -> {
+            SurveyReviewResponse reviewResponse = new SurveyReviewResponse(
+                    review.getSurveyType(),
+                    review.getProductName(),
+                    review.getRating(),
+                    review.getRanking(),
+                    review.getReviewText()
+            );
+
+            if (review.getSurveyType() == SurveyType.SURVEY_TAMPON) {
+                tamponReviews.add(reviewResponse);
+            } else if (review.getSurveyType() == SurveyType.SURVEY_SANITARY) {
+                sanitaryReviews.add(reviewResponse);
+            }
+        });
+
+        return new SurveyResponse(tamponReviews, sanitaryReviews, survey.getMessage());
+
     }
 }
