@@ -49,7 +49,7 @@ public class ChatService {
 
         ChatRoom chatRoom = chatRoomRepository.save(ChatRoom.builder()
                 .user(user)
-                .privateChat(user.getPrivateChat())
+                .privateChat(false)
                 .build());
 
         List<String> savedMemorySummaries = savedMemoryService.getSavedMemorySummaries(userId);
