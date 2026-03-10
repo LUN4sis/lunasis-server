@@ -30,7 +30,6 @@ public class UserService {
         userRepository.save(user);
         return SimpleUserInfo.builder()
                 .nickname(user.getNickname())
-                .privateChat(user.getPrivateChat())
                 .build();
     }
 
