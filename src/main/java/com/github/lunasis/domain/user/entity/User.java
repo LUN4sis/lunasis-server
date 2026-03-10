@@ -113,4 +113,8 @@ public class User {
         this.firstLogin = false;
     }
 
+    public void updateNickName(String nickname) {
+        this.nickname = nickname;
+    }
+
 }

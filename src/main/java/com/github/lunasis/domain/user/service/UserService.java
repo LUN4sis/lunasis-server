@@ -53,17 +53,21 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public User getUserById(UUID userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(UserExceptions.USER_NOT_FOUND::toException);
-    }
+    public NicknameResponse getRandomNickname(UUID userID) {
 
-    public NicknameResponse getRandomNickname() {
-
+        User user = getUserById(userID);
         String nickname = randomNicknameGenerator.generate();
+
+        user.updateNickName(nickname);
+        userRepository.save(user);
         return NicknameResponse.builder()
                 .randomNickname(nickname)
                 .build();
+    }
+
+    public User getUserById(UUID userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(UserExceptions.USER_NOT_FOUND::toException);
     }
 
 

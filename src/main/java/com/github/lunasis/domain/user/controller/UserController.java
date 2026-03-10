@@ -90,9 +90,9 @@ public class UserController {
 
     @GetMapping("/recommend")
     @Operation(summary = "랜덤 닉네임 추천")
-    public ApiResponse<NicknameResponse> getRandomNickname() {
+    public ApiResponse<NicknameResponse> getRandomNickname(@AuthenticationPrincipal User user) {
 
-        return ApiResponse.ok(userService.getRandomNickname());
+        return ApiResponse.ok(userService.getRandomNickname(user.getId()));
     }
 
 }
