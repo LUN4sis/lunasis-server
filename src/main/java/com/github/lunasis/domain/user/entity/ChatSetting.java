@@ -50,6 +50,7 @@ public class ChatSetting {
     private String chatNickname;
 
     public void update(UpdateChatSetting updateChatSetting) {
+        this.chatNickname = updateChatSetting.chatNickName();
         this.warmth = updateChatSetting.warmth();
         this.enthusiastic = updateChatSetting.enthusiastic();
         this.formal = updateChatSetting.formal();
