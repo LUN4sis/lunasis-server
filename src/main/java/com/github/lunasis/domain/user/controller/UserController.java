@@ -1,6 +1,5 @@
 package com.github.lunasis.domain.user.controller;
 
-import com.github.lunasis.domain.user.dto.request.CheckNickname;
 import com.github.lunasis.domain.user.dto.request.SaveMemory;
 import com.github.lunasis.domain.user.dto.request.UpdateChatSetting;
 import com.github.lunasis.domain.user.dto.request.UpdatePreference;
@@ -54,16 +53,6 @@ public class UserController {
         return ApiResponse.ok();
     }
 
-    @PostMapping("/check")
-    @Operation(summary = "닉네임 중복 확인")
-    public ApiResponse<Void> checkNickname(@Valid @RequestBody CheckNickname checkNickname) {
-
-        if (!userService.checkNickname(checkNickname.nickname())) {
-            return ApiResponse.ok();
-        } else {
-            return ApiResponse.error("중복된 닉네임이 있습니다", 404);
-        }
-    }
 
     @PostMapping("/setting")
     @Operation(summary = "채팅 개인 설정")

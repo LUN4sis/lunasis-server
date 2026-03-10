@@ -33,10 +33,6 @@ public class UserService {
                 .build();
     }
 
-    public boolean checkNickname(String nickname) {
-
-        return userRepository.findByNickname(nickname).isPresent();
-    }
 
     @Transactional
     public void updatePreference(User user, UpdatePreference updatePreference) {
