@@ -2,7 +2,6 @@ package com.github.lunasis.domain.user.entity;
 
 import com.github.lunasis.domain.chat.entity.ChatRoom;
 import com.github.lunasis.domain.post.entity.Post;
-import com.github.lunasis.domain.user.dto.request.UpdateUserInfo;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
@@ -90,11 +89,8 @@ public class User {
     @Builder.Default
     private ChatSetting chatSetting = ChatSetting.builder().build();
 
-    public void update(UpdateUserInfo updateUserInfo) {
-
-        this.nickname = updateUserInfo.nickname();
-        this.age = updateUserInfo.age();
-
+    public void updateAge(Integer age) {
+        this.age = age;
     }
 
     public void addBookmark(UUID postId) {

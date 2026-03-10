@@ -24,12 +24,16 @@ public class UserService {
     private final RandomNicknameGenerator randomNicknameGenerator;
 
     @Transactional
-    public SimpleUserInfo updateUserInfo(User user, UpdateUserInfo updateUserInfo) {
+    public SimpleUserInfo updateUserInfo(UUID userId, UpdateUserInfo updateUserInfo) {
 
-        user.update(updateUserInfo);
+        User user = getUserById(userId);
+
+        user.updateAge(updateUserInfo.age());
+        user.getChatSetting().updateChatName(updateUserInfo.chatNickname());
         userRepository.save(user);
+
         return SimpleUserInfo.builder()
-                .nickname(user.getNickname())
+                .nickname(updateUserInfo.chatNickname())
                 .build();
     }
 

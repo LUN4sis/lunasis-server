@@ -40,7 +40,7 @@ public class UserController {
     public ApiResponse<SimpleUserInfo> updateUser(@AuthenticationPrincipal User user,
                                                   @RequestBody UpdateUserInfo updateUserInfo) {
 
-        return ApiResponse.ok(userService.updateUserInfo(user, updateUserInfo));
+        return ApiResponse.ok(userService.updateUserInfo(user.getId(), updateUserInfo));
     }
 
     @PostMapping("/preference")

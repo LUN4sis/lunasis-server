@@ -46,11 +46,18 @@ public class ChatSetting {
     @Column(name = "personal_setting", length = 1000)
     private String personalSetting;
 
+    @Column(name = "chat_name")
+    private String chatNickname;
+
     public void update(UpdateChatSetting updateChatSetting) {
         this.warmth = updateChatSetting.warmth();
         this.enthusiastic = updateChatSetting.enthusiastic();
         this.formal = updateChatSetting.formal();
         this.personalSetting = updateChatSetting.personalSetting();
+    }
+
+    public void updateChatName(String chatNickname) {
+        this.chatNickname = chatNickname;
     }
 
     public enum Level {
