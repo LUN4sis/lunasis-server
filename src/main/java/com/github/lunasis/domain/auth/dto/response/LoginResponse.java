@@ -7,7 +7,6 @@ public record LoginResponse(
         String accessToken,
         String refreshToken,
         boolean firstLogin,
-        String nickname,
-        boolean privateChat
+        String nickname
 ) {
 }

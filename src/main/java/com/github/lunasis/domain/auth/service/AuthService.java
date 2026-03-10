@@ -204,7 +204,6 @@ public class AuthService {
                 .refreshToken(refreshToken)
                 .firstLogin(user.getFirstLogin())
                 .nickname(user.getNickname())
-                .privateChat(user.getPrivateChat())
                 .build();
     }
 
