@@ -36,16 +36,67 @@ public class Preference {
     private UUID id;
 
     // 선호조사 용
-    @ElementCollection(targetClass = Community.class)
+
+    // 헬스케어 관심 항목
+    @ElementCollection(targetClass = HealthCareInterest.class)
     @CollectionTable(
-            name = "user_communities",
+            name = "user_healthcare_interests",
             joinColumns = @JoinColumn(name = "user_id")
     )
     @Enumerated(EnumType.STRING)
-    @Column(name = "community")
+    @Column(name = "healthcare_interest")
     @Builder.Default
-    private Set<Community> communities = new HashSet<>();
+    private Set<HealthCareInterest> healthCareInterests = new HashSet<>();
 
+    //여성의학 관심 분야
+    @ElementCollection(targetClass = GynecologyInterest.class)
+    @CollectionTable(
+            name = "gynecology_interest",
+            joinColumns = @JoinColumn(name = "user_id")
+    )
+    @Enumerated(EnumType.STRING)
+    @Column(name = "gynecology_interest")
+    @Builder.Default
+    private Set<GynecologyInterest> gynecologyInterests = new HashSet<>();
+
+    //여성 병원 방문 여부
+    @Column(name = "has_visited")
+    private Boolean hasVisited;
+
+    // 여성 병원 선택 시 중요 요소
+    @ElementCollection(targetClass = HospitalPriority.class)
+    @CollectionTable(
+            name = "user_hospital_priorities",
+            joinColumns = @JoinColumn(name = "user_id")
+    )
+    @Enumerated(EnumType.STRING)
+    @Column(name = "hospital_priority")
+    @Builder.Default
+    private Set<HospitalPriority> hospitalPriorities = new HashSet<>();
+
+    // 커뮤니티 관심 항목
+    @ElementCollection(targetClass = CommunityInterest.class)
+    @CollectionTable(
+            name = "user_community_interests",
+            joinColumns = @JoinColumn(name = "user_id")
+    )
+    @Enumerated(EnumType.STRING)
+    @Column(name = "community_interest")
+    @Builder.Default
+    private Set<CommunityInterest> communityInterests = new HashSet<>();
+
+    // 커머스 관심 항목
+    @ElementCollection(targetClass = CommerceInterest.class)
+    @CollectionTable(
+            name = "user_commerce_interests",
+            joinColumns = @JoinColumn(name = "user_id")
+    )
+    @Enumerated(EnumType.STRING)
+    @Column(name = "commerce_interest")
+    @Builder.Default
+    private Set<CommerceInterest> commerceInterests = new HashSet<>();
+
+    // 여성 용품 사용
     @ElementCollection(targetClass = ProductCategory.class)
     @CollectionTable(
             name = "user_product_categories",
@@ -56,18 +107,19 @@ public class Preference {
     @Builder.Default
     private Set<ProductCategory> productCategories = new HashSet<>();
 
-    @Column(name = "price_comparison")
-    @Builder.Default
-    private Boolean priceComparison = false;
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     public void updateUserPreference(UpdatePreference updatePreference) {
-        this.communities = updatePreference.communities();
-        this.productCategories = updatePreference.categories();
-        this.priceComparison = updatePreference.priceComparison();
+        this.healthCareInterests = updatePreference.healthCareInterests();
+        this.gynecologyInterests = updatePreference.gynecologyInterests();
+        this.hasVisited = updatePreference.hasVisited();
+        this.hospitalPriorities = updatePreference.hospitalPriorities();
+        this.communityInterests = updatePreference.communityInterests();
+        this.commerceInterests = updatePreference.commerceInterests();
+        this.productCategories = updatePreference.productCategories();
     }
 
     public void assignUser(User user) {
