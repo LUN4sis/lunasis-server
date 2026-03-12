@@ -8,5 +8,5 @@ public enum ProductCategory {
     MENSTRUAL_CUP,
     FEMININE_WASH,
     W_NUTRITION,
-    SEX_TOY
+    BIRTH_CONTROL_PILL
 }
